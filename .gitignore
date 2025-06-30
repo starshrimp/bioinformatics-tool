@@ -1,4 +1,4 @@
-/data
+(backend/data
 /frontend/node_modules
 
 .DS_Store
