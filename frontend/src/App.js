@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { Box, CssBaseline, Paper } from '@mui/material';
+import Sidebar from './components/Sidebar';
+import Landing from './pages/Landing';
+import EDA from './pages/EDA';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Router>
+      <CssBaseline />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          mt: 4,
+        }}
+      >
+        <Paper
+          elevation={3}
+          sx={{
+            display: 'flex',
+            width: '90%',
+            maxWidth: 1200,
+            borderRadius: 4,
+            overflow: 'hidden',
+            minHeight: '80vh',
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <Sidebar />
+          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/eda" element={<EDA />} />
+            </Routes>
+          </Box>
+        </Paper>
+      </Box>
+    </Router>
   );
 }
 
