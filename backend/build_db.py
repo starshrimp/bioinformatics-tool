@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="/Users/sarah/Code/bioinformatics-tool/analysis/.env") 
+load_dotenv(dotenv_path=(Path(__file__).resolve().parent.parent / 'analysis' / '.env'))
 
 
 # File paths
