@@ -1,6 +1,11 @@
+import os
 import sqlite3
 import pandas as pd
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path="/Users/sarah/Code/bioinformatics-tool/analysis/.env") 
+
 
 # File paths
 DATA_DIR = Path("data")
@@ -8,9 +13,9 @@ OUT_PATH = Path("data.sqlite3")
 
 # Input CSVs
 files = {
-    "expression_median": "/Users/sarah/Code/bioinformatics-tool/backend/data/expression_median_tidy.csv",
-    "expression_zscored": "/Users/sarah/Code/bioinformatics-tool/backend/data/expression_zscored_tidy.csv",
-    "clinical_metadata": "/Users/sarah/Code/bioinformatics-tool/backend/data/GSE96058_clinical_metadata_cleaned.csv",
+    "expression_median": os.getenv("MEDIAN_TIDY"),
+    "expression_zscored": os.getenv("ZSCORED_TIDY"),
+    "clinical_metadata": os.getenv("CLINICAL"),
 }
 
 # Connect to database (overwrite if exists)
