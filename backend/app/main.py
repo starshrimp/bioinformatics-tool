@@ -1,16 +1,13 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
+from flask import Flask
 
-def create_app():
-    app = Flask(__name__)
-    CORS(app)
+app = Flask(__name__)
 
-    @app.route('/api/hello')
-    def hello():
-        return jsonify({'message': 'Hello from Flask backend!'})
+@app.route("/")
+def hello():
+    return "👋 Hello from the Raspberry Pi!"
 
-    return app
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
 
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True)
+
+# (No replacement lines; the commented-out code is removed entirely.)
