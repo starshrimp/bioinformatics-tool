@@ -1,30 +1,36 @@
 import React, { useState } from 'react';
 import { Box, Typography, Select, MenuItem, FormControl, InputLabel, Checkbox, FormControlLabel, Button, CircularProgress, Alert } from '@mui/material';
+import Plot from 'react-plotly.js';
 
 const UMAPPage = () => {
-  // State for form controls
   const [matrix, setMatrix] = useState('median_centered');
   const [includeClinical, setIncludeClinical] = useState(false);
   const [loading, setLoading] = useState(false);
-  // These could be set after backend integration
   const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  const baseUrl = process.env.REACT_APP_API_URL;
 
-  // Placeholder handler for "Run UMAP"
   const handleRunUMAP = async () => {
     setLoading(true);
     setResult(null);
+    setError(null);
 
-    // Simulate async backend call (replace with your actual fetch later)
-    setTimeout(() => {
-      setLoading(false);
-      setResult({
-        plotUrl: null, // will be set by backend, e.g. /api/umap_result.png
-        stats: {
-          silhouette: 0.41,
-          clusters: 5,
-        },
+    try {
+      const res = await fetch(`${baseUrl}/api/umap`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          matrix,
+          include_clinical: includeClinical,
+        }),
       });
-    }, 2500);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setResult(data);
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
   };
 
   return (
@@ -33,11 +39,10 @@ const UMAPPage = () => {
         UMAP Visualization
       </Typography>
       <Typography variant="body1" sx={{ mb: 2 }}>
-        Uniform Manifold Approximation and Projection (UMAP) is a popular method for visualizing high-dimensional data such as gene expression. 
+        Uniform Manifold Approximation and Projection (UMAP) is a popular method for visualizing high-dimensional data such as gene expression.
         Here you can generate a 2D UMAP projection of your RNA-seq data. Optionally, you can include clinical metadata to enrich the visualization.
       </Typography>
 
-      {/* --- Parameter Controls --- */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
         <FormControl sx={{ minWidth: 250 }}>
           <InputLabel id="matrix-select-label">Expression Matrix</InputLabel>
@@ -52,7 +57,6 @@ const UMAPPage = () => {
             <MenuItem value="zscored">Median-Centered Z-Scored Expression Matrix</MenuItem>
           </Select>
         </FormControl>
-
         <FormControlLabel
           control={
             <Checkbox
@@ -66,40 +70,53 @@ const UMAPPage = () => {
         />
       </Box>
 
-      {/* --- Run Button & Info --- */}
       <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <Button 
-          variant="contained" 
-          onClick={handleRunUMAP}
-          disabled={loading}
-        >
+        <Button variant="contained" onClick={handleRunUMAP} disabled={loading}>
           Run UMAP
         </Button>
         <Typography variant="body2" color="text.secondary">
-          {loading
-            ? "Running UMAP, please wait a few seconds..."
-            : "This computation may take a few seconds."}
+          {loading ? "Running UMAP, please wait a few seconds..." : "This computation may take a few seconds."}
         </Typography>
         {loading && <CircularProgress size={22} />}
       </Box>
 
-      {/* --- Placeholder for Result --- */}
+      {error && <Alert severity="error">{error}</Alert>}
+
       {result && (
         <Box sx={{ mt: 4 }}>
           <Alert severity="success" sx={{ mb: 2 }}>
-            UMAP completed! (Example data below.)
+            UMAP completed!
           </Alert>
-          {/* Here you'll render the returned plot from backend */}
           <Box sx={{ mb: 2 }}>
-            {/* Placeholder: later show an actual <img src={result.plotUrl}/> */}
-            <Box sx={{ bgcolor: "#eee", width: 400, height: 250, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', borderRadius: 2 }}>
-              UMAP plot will appear here
-            </Box>
+            <Plot
+              data={[
+                {
+                  x: result.umap_coords.map(pair => pair[0]),
+                  y: result.umap_coords.map(pair => pair[1]),
+                  mode: 'markers',
+                  type: 'scattergl',
+                  marker: {
+                    color: result.clusters,
+                    colorscale: 'Viridis',
+                    size: 8,
+                    colorbar: { title: 'Cluster' }
+                  },
+                  text: result.sample_ids, // shows on hover
+                  hoverinfo: 'text',
+                }
+              ]}
+              layout={{
+                width: 500,
+                height: 350,
+                title: 'UMAP Projection',
+                xaxis: { title: 'UMAP1' },
+                yaxis: { title: 'UMAP2' },
+              }}
+            />
           </Box>
-          {/* Example stats: */}
           <Typography variant="body2" sx={{ mb: 1 }}>
-            <strong>Number of clusters:</strong> {result.stats.clusters}<br />
-            <strong>Silhouette score:</strong> {result.stats.silhouette}
+            <strong>Number of clusters:</strong> {result.n_clusters}<br />
+            <strong>Silhouette score:</strong> {result.silhouette}
           </Typography>
         </Box>
       )}

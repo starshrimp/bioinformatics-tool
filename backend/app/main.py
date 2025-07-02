@@ -7,7 +7,7 @@ def hello():
     return "👋 Hello from the Raspberry Pi!"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=6000)
 
 
 # from flask import Flask, jsonify
