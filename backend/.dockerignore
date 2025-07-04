@@ -1,10 +1,36 @@
-db_prep.ipynb
-build_df.py
+# Exclude Jupyter notebooks and Python cache
 *.ipynb
 __pycache__/
 *.pyc
 *.log
+
+# Exclude all data files by default
 data/*
+
+# Include only essential data files for production
 !data/parquet/
 !data/parquet/*.parquet
 !data/GSE96058_clinical_metadata_cleaned.csv
+
+# Exclude large/unnecessary data files specifically
+data/*.soft.gz
+data/*.xml
+data/*.gtf
+data/*.txt
+data/GSE96058_*.csv
+!data/GSE96058_clinical_metadata_cleaned.csv
+data/expression_*.csv
+data/*.sqlite3
+data/test.ipynb
+data/db_prep.ipynb
+data/build_db.py
+
+# Environment files (will be copied explicitly in Dockerfile)
+.env
+.env.*
+!.env.production
+!.env.development
+
+# Development scripts
+start-dev.sh
+start-prod.sh
