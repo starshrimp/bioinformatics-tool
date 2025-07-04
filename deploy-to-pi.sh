@@ -27,6 +27,8 @@ echo "Creating directory structure and copying files..."
 # Create directory on Pi and copy file in one step
 ssh ${PI_USER}@${PI_HOST} "mkdir -p ${PI_PATH}"
 
+ssh ${PI_USER}@${PI_HOST} "rm -rf ${PI_PATH}/*"
+
 echo "=== Copying to Raspberry Pi ==="
 scp bioinformatics-backend-prod.tar.gz ${PI_USER}@${PI_HOST}:${PI_PATH}/
 
