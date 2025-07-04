@@ -27,7 +27,8 @@ const UMAPPage = () => {
     setError(null);
 
     try {
-      const res = await fetch('/api/umap', {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; 
+      const res = await fetch(`${BACKEND_URL}/api/umap`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1,16 +1,18 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
+from flask_cors import CORS
 from api.umap import umap_api
 
 # Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app, origins=["http://localhost:3000", "http://192.168.1.110:3000"])
 
 @app.route("/")
 def hello():
-    return "👋 Hello from the Raspberry Pi!"
+    return "👋 Hello from the Raspberry Pi - Backend 4th of July 17.00!"
 
 app.register_blueprint(umap_api)
 
