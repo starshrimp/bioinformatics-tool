@@ -9,3 +9,14 @@
 
 *.sqlite
 *.sqlite3
+
+# Environment files
+.env
+.env.local
+**/.env
+**/.env.local
+
+# Keep example files
+!**/.env.example
+!**/.env.development
+!**/.env.production

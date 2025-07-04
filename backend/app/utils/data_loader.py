@@ -1,8 +1,10 @@
 import os
 import pandas as pd
 import logging
+from dotenv import load_dotenv
 
-import os
+# Load environment variables
+load_dotenv()
 
 # (assuming backend/app/utils/)
 BACKEND_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
