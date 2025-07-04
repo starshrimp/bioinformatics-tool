@@ -4,6 +4,7 @@ python-dotenv
 pandas
 pyarrow
 numpy
+openai
 scikit-learn
 umap-learn
 xgboost
