@@ -15,7 +15,7 @@ const COLORS = [
 
 
 const UMAPPage = () => {
-  const [matrix, setMatrix] = useState('median_centered');
+  const [matrix, setMatrix] = useState('filtered');
   const [includeClinical, setIncludeClinical] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -87,6 +87,7 @@ const UMAPPage = () => {
             label="Expression Matrix"
             onChange={e => setMatrix(e.target.value)}
           >
+            <MenuItem value="filtered">Filtered Expression Matrix</MenuItem>
             <MenuItem value="median_centered">Median-Centered Expression Matrix</MenuItem>
             <MenuItem value="zscored">Median-Centered Z-Scored Expression Matrix</MenuItem>
           </Select>

@@ -12,7 +12,6 @@ import umap
 umap_api = Blueprint('umap_api', __name__)
 
 @umap_api.route('/api/umap', methods=['POST'])
-@umap_api.route('/api/umap', methods=['POST'])
 def api_umap():
     data = request.json
     matrix_choice = data['matrix']

@@ -13,13 +13,15 @@ def get_full_path(relative_path):
 
 def load_expression(matrix_choice):
     logging.basicConfig(level=logging.INFO)
-    logging.info(f"Current working directory: {os.getcwd()}")
     if matrix_choice == "median_centered":
         path = os.getenv("MEDIAN_CENTERED_PARQUET")
     elif matrix_choice == "zscored":
         path = os.getenv("ZSCORED_PARQUET")
+    elif matrix_choice == "filtered":
+        path = os.getenv("FILTERED")
     else:
-        raise ValueError("Unknown matrix choice")
+        logging.info(f"Path: {path}")
+        raise ValueError(f"Unknown matrix choice {path}")
     if not path:
         raise ValueError(f"File path for {matrix_choice} is not set!")
     # Use the correct reader for the file type
