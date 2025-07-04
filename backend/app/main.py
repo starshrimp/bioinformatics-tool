@@ -1,16 +1,26 @@
-from flask import Flask, jsonify
+import os
+from dotenv import load_dotenv
+from flask import Flask
 from flask_cors import CORS
+from api.umap import umap_api
 
-def create_app():
-    app = Flask(__name__)
-    CORS(app)
+# Load environment variables from .env file
+load_dotenv()
 
-    @app.route('/api/hello')
-    def hello():
-        return jsonify({'message': 'Hello from Flask backend!'})
+app = Flask(__name__)
+CORS(app, origins=["http://localhost:3000", "http://192.168.1.110:3000"])
 
-    return app
+@app.route("/")
+def hello():
+    return "👋 Hello from the Raspberry Pi - Backend 4th of July 17.00!"
 
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True)
+app.register_blueprint(umap_api)
+
+
+if __name__ == "__main__":
+    # Get configuration from environment variables
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", 8000))
+    debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+    
+    app.run(host=host, port=port, debug=debug)

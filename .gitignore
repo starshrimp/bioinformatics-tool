@@ -1,6 +1,22 @@
 /backend/data
 /frontend/node_modules
+/frontend/build
+/backend/__pycache__
+/backend/app/api/__pycache__
+/backend/app/utils/__pycache__
 
 .DS_Store
 
+*.sqlite
 *.sqlite3
+
+# Environment files
+.env
+.env.local
+**/.env
+**/.env.local
+
+# Keep example files
+!**/.env.example
+!**/.env.development
+!**/.env.production
