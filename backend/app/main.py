@@ -8,7 +8,11 @@ from api.umap import umap_api
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000", "http://192.168.1.110:3000"])
+CORS(app, resources={r"/api/*": {"origins": [
+    "http://localhost:3000",
+    "http://192.168.1.110:3000",
+    "https://bioai.sarahrebeccameyer.com"
+]}})
 
 @app.route("/")
 def hello():
