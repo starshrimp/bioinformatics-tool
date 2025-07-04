@@ -1,2 +1,15 @@
 flask
 flask-cors
+python-dotenv
+pandas
+pyarrow
+numpy
+scikit-learn
+umap-learn
+xgboost
+GEOparse
+matplotlib
+seaborn
+tqdm
+requests
+joblib

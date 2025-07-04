@@ -4,6 +4,7 @@ import { Box, CssBaseline, Paper } from '@mui/material';
 import Sidebar from './components/Sidebar';
 import Landing from './pages/Landing';
 import EDA from './pages/EDA';
+import UMAP from './pages/UMAP';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/eda" element={<EDA />} />
+              <Route path="/umap" element={<UMAP />} />
             </Routes>
           </Box>
         </Paper>
