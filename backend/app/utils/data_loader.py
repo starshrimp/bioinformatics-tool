@@ -22,8 +22,8 @@ def load_expression(matrix_choice):
     elif matrix_choice == "filtered":
         path = os.getenv("FILTERED")
     else:
-        logging.info(f"Path: {path}")
-        raise ValueError(f"Unknown matrix choice {path}")
+        logging.info(f"Matrix choice: {matrix_choice}")
+        raise ValueError(f"Unknown matrix choice {matrix_choice}")
     if not path:
         raise ValueError(f"File path for {matrix_choice} is not set!")
     # Use the correct reader for the file type
