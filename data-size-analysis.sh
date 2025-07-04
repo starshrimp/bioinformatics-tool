@@ -4,7 +4,12 @@
 echo "=== Data Directory Size Analysis ==="
 echo ""
 
-cd /Users/sarah/Code/bioinformatics-tool/backend/data
+if [ -z "$DATA_DIR" ]; then
+    echo "Error: DATA_DIR environment variable is not set."
+    echo "Please set DATA_DIR to the base directory of your data files."
+    exit 1
+fi
+cd "$DATA_DIR"
 
 echo "Total data directory size:"
 du -sh . 2>/dev/null
