@@ -126,8 +126,6 @@ const UMAPPage = () => {
           <Plot
             data={traces}
             layout={{
-              width: 800,
-              height: 550,
               title: 'UMAP: Gene Expression + Clinical Features',
               xaxis: { title: 'UMAP1', showgrid: true, zeroline: false },
               yaxis: { title: 'UMAP2', showgrid: true, zeroline: false },
@@ -141,14 +139,17 @@ const UMAPPage = () => {
                 x: 1.05,
                 y: 0.5,
                 yanchor: "middle",
-                 itemwidth: 50,  
+                itemwidth: 50,  
               },
-              margin: { t: 40, r: 170, b: 40, l: 40 }
+              margin: { t: 40, r: 170, b: 40, l: 40 },
+              autosize: true
             }}
             config={{
               responsive: true,
               displaylogo: false
             }}
+            style={{ width: '100%', height: '550px' }}
+            useResizeHandler={true}
           />
         </Box>
       )}
