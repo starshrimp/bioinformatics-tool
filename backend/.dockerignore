@@ -4,4 +4,7 @@ build_df.py
 __pycache__/
 *.pyc
 *.log
-/data/
+data/*
+!data/parquet/
+!data/parquet/*.parquet
+!data/GSE96058_clinical_metadata_cleaned.csv
