@@ -9,6 +9,7 @@
 
 *.sqlite
 *.sqlite3
+**/.env.development
 
 # Environment files
 .env
@@ -18,5 +19,5 @@
 
 # Keep example files
 !**/.env.example
-!**/.env.development
+**/.env.development
 !**/.env.production
