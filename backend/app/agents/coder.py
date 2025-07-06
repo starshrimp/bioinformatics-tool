@@ -33,6 +33,9 @@ def call_coder_llm(steps, columns):
         "    status_counts.columns = ['status', 'count']\n"
         "    status_table = status_counts.to_markdown(index=False)\n"
         "    output = f\"## Value Counts for Status\\n{status_table}\\n\"\n\n"
+        "• Never use variables you have not explicitly defined earlier in the code (e.g. do not use 'var', 'df', 'ax', etc. unless they are defined)."
+        "• Never use 'var' as a variable name; always use meaningful names related to the data or analysis (e.g., 'group', 'row', 'grouped', 'summary_stats')."
+        "• Always write code that is self-contained and will run as-is, with all necessary variables defined in the correct order."
 
         f"Data columns: {columns}\n"
         "Analysis steps:\n"
@@ -47,7 +50,7 @@ def call_coder_llm(steps, columns):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=900,
+        max_tokens=1000,
         temperature=0.2,
     )
     code = response.choices[0].message.content.strip()
