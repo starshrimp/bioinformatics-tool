@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Typography, TextField, Button, Box, CircularProgress, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
 
 
 
@@ -29,6 +32,7 @@ const LLMEDA = () => {
         text: data.text,
         explanation: data.explanation,
         code: data.code,
+        steps: data.steps // Ensure steps is always an array
       });
     } catch (err) {
       setError(err.message || 'Something went wrong.');
@@ -67,7 +71,10 @@ const LLMEDA = () => {
       {(result.text || result.plot || result.explanation || result.code) && (
         <Paper elevation={3} sx={{ my: 3, p: 2 }}>
           {result.text && (
-            <Typography sx={{ mb: 2 }}>{result.text}</Typography>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {result.text}
+            </ReactMarkdown>
+
           )}
           {result.plot && (
             <img src={result.plot} alt="Result Plot" style={{ maxWidth: '100%', marginBottom: 16 }} />
@@ -77,6 +84,22 @@ const LLMEDA = () => {
               <strong>Explanation:</strong> {result.explanation}
             </Typography>
           )}
+          {/* Analysis Plan */}
+          {result.steps && result.steps.length > 0 && (
+            <Accordion sx={{ mt: 2 }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Show analysis plan (from Planner LLM)</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <ol style={{ marginLeft: 16 }}>
+                  {result.steps.map((step, idx) => (
+                    <li key={idx} style={{ marginBottom: 8 }}>{step}</li>
+                  ))}
+                </ol>
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {/* Python code collapsible */}
           {result.code && (
             <Accordion sx={{ mt: 2 }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
