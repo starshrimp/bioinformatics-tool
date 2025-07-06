@@ -11,6 +11,8 @@
 *.sqlite
 *.sqlite3
 **/.env.development
+*.pyc
+*.gz
 
 # Environment files
 .env
