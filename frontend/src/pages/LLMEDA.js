@@ -69,6 +69,21 @@ const LLMEDA = () => {
       {error && (
         <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>
       )}
+      {error && result.retry ? (
+        <Box sx={{ mt: 2 }}>
+          <Typography color="error">
+            {error}
+          </Typography>
+          <Button variant="outlined" onClick={handleQuery} sx={{ mt: 1 }}>
+            Retry
+          </Button>
+        </Box>
+      ) : error && (
+        <Typography color="error" sx={{ mt: 2 }}>
+          {error}
+        </Typography>
+      )}
+
       {result.evaluation && (
         <Paper elevation={2} sx={{ my: 2, p: 2, background: "#e7f7eb" }}>
           <Typography variant="h6" sx={{ mb: 1 }}>
