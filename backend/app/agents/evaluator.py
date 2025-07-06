@@ -21,7 +21,7 @@ def call_evaluator_llm(user_query, output, steps=None):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=400,
+        max_tokens=1200,
         temperature=0.2,
     )
     evaluation = response.choices[0].message.content.strip()

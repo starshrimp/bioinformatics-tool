@@ -39,7 +39,7 @@ def call_planner_llm(user_query, columns):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "user", "content": prompt}],
-        max_tokens=400,
+        max_tokens=600,
         temperature=0.2,
     )
     plan_str = response.choices[0].message.content.strip()
