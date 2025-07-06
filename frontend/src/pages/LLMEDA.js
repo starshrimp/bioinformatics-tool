@@ -32,7 +32,8 @@ const LLMEDA = () => {
         text: data.text,
         explanation: data.explanation,
         code: data.code,
-        steps: data.steps // Ensure steps is always an array
+        steps: data.steps,
+        evaluation: data.evaluation,
       });
     } catch (err) {
       setError(err.message || 'Something went wrong.');
@@ -41,7 +42,7 @@ const LLMEDA = () => {
   };
 
   return (
-    <Box maxWidth={600} mx="auto">
+    <Box maxWidth={800} mx="auto">
       <Typography variant="h5" gutterBottom>
         Chat with your Data
       </Typography>
@@ -68,6 +69,17 @@ const LLMEDA = () => {
       {error && (
         <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>
       )}
+      {result.evaluation && (
+        <Paper elevation={2} sx={{ my: 2, p: 2, background: "#e7f7eb" }}>
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            🧠 Key Insights (AI Interpretation)
+          </Typography>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {result.evaluation}
+          </ReactMarkdown>
+        </Paper>
+      )}
+
       {(result.text || result.plot || result.explanation || result.code) && (
         <Paper elevation={3} sx={{ my: 3, p: 2 }}>
           {result.text && (

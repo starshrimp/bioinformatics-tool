@@ -15,6 +15,8 @@ import logging
 from dotenv import load_dotenv
 from agents.planner import call_planner_llm
 from agents.coder import call_coder_llm
+from agents.evaluator import call_evaluator_llm
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,10 +29,10 @@ def get_full_path(relative_path):
     return os.path.join(BACKEND_ROOT, relative_path)
 
 # Optional: Load your DataFrame here or in main.py and pass it
-clinical_df = pd.read_csv(get_full_path(os.getenv("CLINICAL")))  # Adjust path
+clinical_df = pd.read_csv(get_full_path(os.getenv("CLINICAL_LLM")))  # Adjust path
 
-clinical_path = os.getenv("CLINICAL")
-print(f"CLINICAL file path loaded: {clinical_path}")
+# clinical_path = os.getenv("CLINICAL_LLM")
+# print(f"CLINICAL file path loaded: {clinical_path}")
 
 
 llm_eda_api = Blueprint('llm_eda_api', __name__)
@@ -44,6 +46,7 @@ def strip_code_fences(code):
     if match:
         return match.group(1)
     return code.strip()
+
 
 @llm_eda_api.route('/api/llm-eda', methods=['POST'])
 def llm_eda():
@@ -79,16 +82,28 @@ def llm_eda():
             buf.seek(0)
             plot_base64 = "data:image/png;base64," + base64.b64encode(buf.read()).decode('utf-8')
         text_result = local_env.get('output', '')
+
+        evaluation = call_evaluator_llm(query, steps, text_result)
+
         return jsonify({
             'plot': plot_base64,
             'text': text_result,
             'code': code,
-            'steps': steps
+            'steps': steps,
+            'evaluation': evaluation,
         })
     except Exception as e:
         tb = traceback.format_exc()
         logger.error("Execution failed: %s\nCode:\n%s", tb, code)
-        return jsonify({'error': f'Failed: {str(e)}', 'trace': tb, 'code': code}), 500
+        return jsonify({
+            'error': f"Sorry, the analysis could not be completed due to a technical issue: {str(e)}",
+            'trace': tb,         # Optionally, remove in production
+            'code': code,        # Optionally, remove in production
+            'retry': True        # <--- Add this flag!
+        }), 200
+
+    
+
     # prompt = (
     #     f"You are a data scientist. The clinical metadata DataFrame (named clinical_df) is from the GSE96058 breast cancer study and contains information about thousands of breast cancer patients. "
     #     f"The DataFrame has columns: {columns}. "
