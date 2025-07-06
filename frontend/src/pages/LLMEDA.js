@@ -85,7 +85,7 @@ const LLMEDA = () => {
             </Typography>
           )}
           {/* Analysis Plan */}
-          {result.steps && result.steps.length > 0 && (
+          {Array.isArray(result.steps) && result.steps.length > 0 && (
             <Accordion sx={{ mt: 2 }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography>Show analysis plan (from Planner LLM)</Typography>
@@ -103,7 +103,7 @@ const LLMEDA = () => {
           {result.code && (
             <Accordion sx={{ mt: 2 }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>Show generated Python code</Typography>
+                <Typography>Show generated Python code (from Coder LLM)</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <pre style={{
