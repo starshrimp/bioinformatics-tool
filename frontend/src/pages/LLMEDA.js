@@ -22,7 +22,8 @@ const LLMEDA = () => {
     setResult({ plot: null, text: '', explanation: '' });
 
     try {
-      const response = await fetch('/api/llm-eda', {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; 
+      const response = await fetch(`${BACKEND_URL}/api/llm-eda`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query }),
