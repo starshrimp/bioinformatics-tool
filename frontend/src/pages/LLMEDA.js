@@ -89,11 +89,7 @@ const LLMEDA = () => {
       >
         {loading ? <CircularProgress size={24} /> : 'Run'}
       </Button>
-      {error && (
-        <Typography color="error" sx={{ mt: 2 }}>
-          {typeof error === "string" ? error : error?.message || "Unknown error"}
-        </Typography>
-      )}
+
       {error && retry ? (
         <Box sx={{ mt: 2 }}>
           <Typography color="error">
