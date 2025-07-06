@@ -18,7 +18,8 @@ COPY data/parquet/ ./data/parquet/
 COPY data/GSE96058_clinical_metadata_cleaned.csv ./data/
 
 # Copy appropriate environment configuration
-COPY .env.${ENV} ./.env
+COPY .env.${ENV} ./.env.production
+
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt

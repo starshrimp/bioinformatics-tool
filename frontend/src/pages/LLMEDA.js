@@ -1,0 +1,166 @@
+import React, { useState } from 'react';
+import { Typography, TextField, Button, Box, CircularProgress, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
+
+
+
+const LLMEDA = () => {
+  const [query, setQuery] = useState('');
+  const [result, setResult] = useState({ plot: null, text: '', explanation: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleQuery = async () => {
+    setLoading(true);
+    setError('');
+    setResult({ plot: null, text: '', explanation: '' });
+
+    try {
+      const response = await fetch('/api/llm-eda', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+      const data = await response.json();
+      if (data.error) {
+        setError({ message: data.error });
+        setRetry(data.retry || false);
+        setLoading(false);
+        return;
+      }
+
+      setResult({
+        plot: data.plot,
+        text: data.text,
+        code: data.code,
+        steps: data.steps,
+        evaluation: data.evaluation,
+        explanation: data.plot_explanation 
+      });
+    } catch (err) {
+      setError(err.message || 'Something went wrong.');
+    }
+    setLoading(false);
+  };
+
+  return (
+    <Box maxWidth={800} mx="auto">
+      <Typography variant="h5" gutterBottom>
+        Chat with your Data
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        Ask a question about your clinical metadata.<br />
+        (e.g. "Display a plot for how many patients with each PAM50 subtype are in the study")
+      </Typography>
+      <TextField
+        label="Your question"
+        fullWidth
+        multiline
+        minRows={2}
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+        sx={{ my: 2 }}
+      />
+      <Button
+        variant="contained"
+        onClick={handleQuery}
+        disabled={loading || !query.trim()}
+      >
+        {loading ? <CircularProgress size={24} /> : 'Run'}
+      </Button>
+      {error && (
+        <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>
+      )}
+      {error && result.retry ? (
+        <Box sx={{ mt: 2 }}>
+          <Typography color="error">
+            {error}
+          </Typography>
+          <Button variant="outlined" onClick={handleQuery} sx={{ mt: 1 }}>
+            Retry
+          </Button>
+        </Box>
+      ) : error && (
+        <Typography color="error" sx={{ mt: 2 }}>
+          {error}
+        </Typography>
+      )}
+
+      {result.evaluation && (
+        <Paper elevation={2} sx={{ my: 2, p: 2, background: "#e7f7eb" }}>
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            🧠 Key Insights (AI Interpretation)
+          </Typography>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {result.evaluation}
+          </ReactMarkdown>
+        </Paper>
+      )}
+
+      {(result.text || result.plot || result.explanation || result.code) && (
+        <Paper elevation={3} sx={{ my: 3, p: 2 }}>
+          {result.text && (
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {result.text}
+            </ReactMarkdown>
+
+          )}
+          {result.plot && (
+            <>
+              <img src={result.plot} alt="Result Plot" style={{ maxWidth: '100%', marginBottom: 16 }} />
+              {result.explanation && (
+                <Typography variant="caption" sx={{ display: "block", mt: 1, color: "text.secondary" }}>
+                  <strong>Plot Description:</strong> {result.explanation}
+                </Typography>
+              )}
+            </>
+          )}
+
+          {/* Analysis Plan */}
+          {Array.isArray(result.steps) && result.steps.length > 0 && (
+            <Accordion sx={{ mt: 2 }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Show analysis plan (from Planner LLM)</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <ol style={{ marginLeft: 16 }}>
+                  {result.steps.map((step, idx) => (
+                    <li key={idx} style={{ marginBottom: 8 }}>{step}</li>
+                  ))}
+                </ol>
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {/* Python code collapsible */}
+          {result.code && (
+            <Accordion sx={{ mt: 2 }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Show generated Python code (from Coder LLM)</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <pre style={{
+                  background: "#f7f7f9",
+                  borderRadius: "4px",
+                  padding: "12px",
+                  overflowX: "auto",
+                  fontSize: "0.72rem",         // smaller font
+                  lineHeight: 1.5,
+                  // whiteSpace: "pre-wrap",      // enables wrapping
+                  // wordBreak: "break-word"      // ensures long words/lines wrap
+                }}>
+                  {result.code}
+                </pre>
+              </AccordionDetails>
+            </Accordion>
+          )}
+        </Paper>
+      )}
+
+    </Box>
+  );
+};
+
+export default LLMEDA;

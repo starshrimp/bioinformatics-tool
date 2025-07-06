@@ -21,10 +21,10 @@ const Sidebar = () => {
   return (
     <Box
       sx={{
-        width: 220,
+        width: 250,
         borderRight: '1px solid #ddd',
         bgcolor: '#f9f9f9',
-        p: 2,
+        p: 2.5,
       }}
     >
       <Typography variant="h6" gutterBottom>
@@ -32,12 +32,15 @@ const Sidebar = () => {
       </Typography>
       <List>
         <ListItemButton component={Link} to="/">
-          <ListItemText primary="Home" />
+          <ListItemText primary="About" />
+        </ListItemButton>
+        <ListItemButton component={Link} to="/llmeda">
+          <ListItemText primary="Data Copilot 💬" />
         </ListItemButton>
         
         {/* Data Analysis with dropdown */}
         <ListItemButton onClick={() => handleToggle('dataAnalysis')}>
-          <ListItemText primary="Data Analysis" />
+          <ListItemText primary="Data Analysis 📈" />
           {openMenus.dataAnalysis ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={openMenus.dataAnalysis} timeout="auto" unmountOnExit>
@@ -45,13 +48,12 @@ const Sidebar = () => {
             <ListItemButton sx={{ pl: 4 }} component={Link} to="/eda">
               <ListItemText primary="Exploratory Data Analysis" />
             </ListItemButton>
-   
           </List>
         </Collapse>
         
         {/* Unsupervised ML with dropdown */}
         <ListItemButton onClick={() => handleToggle('unsupervised')}>
-          <ListItemText primary="Unsupervised ML" />
+          <ListItemText primary="Unsupervised ML 🧩" />
           {openMenus.unsupervised ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={openMenus.unsupervised} timeout="auto" unmountOnExit>
@@ -70,7 +72,7 @@ const Sidebar = () => {
 
         {/* Supervised ML with dropdown */}
         <ListItemButton onClick={() => handleToggle('supervised')}>
-          <ListItemText primary="Supervised ML" />
+          <ListItemText primary="Supervised ML 🎯" />
           {openMenus.supervised ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={openMenus.supervised} timeout="auto" unmountOnExit>
