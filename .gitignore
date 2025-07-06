@@ -4,6 +4,7 @@
 /backend/__pycache__
 /backend/app/api/__pycache__
 /backend/app/utils/__pycache__
+/backend/app/agents/__pycache__
 
 .DS_Store
 
