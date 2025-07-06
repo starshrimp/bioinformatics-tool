@@ -21,4 +21,4 @@
 # Keep example files
 !**/.env.example
 **/.env.development
-!**/.env.production
+**/.env.production
