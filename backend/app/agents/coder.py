@@ -32,6 +32,9 @@ def call_coder_llm(steps, columns):
         "• Never use variables you have not explicitly defined earlier in the code (e.g. do not use 'var', 'df', 'ax', etc. unless they are defined)."
         "• Never use 'var' as a variable name; always use meaningful names related to the data or analysis (e.g., 'group', 'row', 'grouped', 'summary_stats')."
         "• Always write code that is self-contained and will run as-is, with all necessary variables defined in the correct order."
+        "• When showing a DataFrame or table in the output, always limit the output to a maximum of 10 rows, using `.head(10)` or similar. If the table is longer, indicate in the output that it has been truncated (e.g., “... (table truncated, showing first 10 rows)”)."
+        "Example: \n"
+        "    output = f\"## Kaplan-Meier Survival Curve (first 10 rows):\n{km_df.head(10).to_markdown(index=False)}\n... (table truncated, showing first 10 rows)\\n\"\n\n"
 
         f"Data columns: {columns}\n"
         "Analysis steps:\n"

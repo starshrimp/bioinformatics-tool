@@ -30,6 +30,14 @@ load_dotenv(dotenv_path=dotenv_path)
 def get_full_path(relative_path):
     return os.path.join(BACKEND_ROOT, relative_path)
 
+
+def truncate_table_markdown(text, max_rows=30):
+    lines = text.split('\n')
+    if len(lines) > max_rows + 2:  # +2 for header/sep
+        return '\n'.join(lines[:max_rows+2]) + '\n... (table truncated, showing first 10 rows)'
+    return text
+
+
 # Optional: Load your DataFrame here or in main.py and pass it
 clinical_df = pd.read_csv(get_full_path(os.getenv("CLINICAL_LLM")))  # Adjust path
 
@@ -87,7 +95,10 @@ def llm_eda():
             plt.close()
             buf.seek(0)
             plot_base64 = "data:image/png;base64," + base64.b64encode(buf.read()).decode('utf-8')
+
         text_result = local_env.get('output', '')
+        if "| KM_estimate" in text_result: 
+            text_result = truncate_table_markdown(text_result)
 
         evaluation = call_evaluator_llm(query, steps, text_result)
         plot_explanation = None
