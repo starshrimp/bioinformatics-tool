@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
 from api.umap import umap_api
+from api.llm_eda import llm_eda_api
 
 # Load environment variables from .env file
 load_dotenv()
@@ -16,9 +17,10 @@ CORS(app, resources={r"/api/*": {"origins": [
 
 @app.route("/")
 def hello():
-    return "👋 Hello from the Raspberry Pi - Backend 4th of July 17.00!"
+    return "👋 Hello from the Raspberry Pi - Backend 6th of July 17.00!"
 
 app.register_blueprint(umap_api)
+app.register_blueprint(llm_eda_api)
 
 
 if __name__ == "__main__":

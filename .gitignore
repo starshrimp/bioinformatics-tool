@@ -4,11 +4,16 @@
 /backend/__pycache__
 /backend/app/api/__pycache__
 /backend/app/utils/__pycache__
+/backend/app/agents/__pycache__
 
 .DS_Store
 
 *.sqlite
 *.sqlite3
+**/.env.development
+__pycache__/
+*.pyc
+*.gz
 
 # Environment files
 .env
@@ -18,5 +23,5 @@
 
 # Keep example files
 !**/.env.example
-!**/.env.development
-!**/.env.production
+**/.env.development
+**/.env.production
