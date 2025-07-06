@@ -19,7 +19,7 @@ COPY data/GSE96058_clinical_metadata_cleaned.csv ./data/
 COPY data/GSE96058_clinical_LLM.csv ./data/
 
 # Copy appropriate environment configuration
-COPY .env.${ENV} ./.env.production
+COPY .env.${ENV} ./.env
 
 
 # Install Python dependencies

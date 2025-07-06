@@ -21,8 +21,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 BACKEND_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # points to /backend/app
-env_file = os.getenv("ENV_FILE", ".env.development")
-dotenv_path = os.path.join(BACKEND_ROOT, env_file)
+dotenv_path = os.path.join(BACKEND_ROOT, ".env")
 load_dotenv(dotenv_path=dotenv_path)
 
 
