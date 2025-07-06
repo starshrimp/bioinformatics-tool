@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
-import { Typography, TextField, Button, Box, CircularProgress, Paper } from '@mui/material';
+import { Typography, TextField, Button, Box, CircularProgress, Paper, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+
 
 const LLMEDA = () => {
   const [query, setQuery] = useState('');
-  const [result, setResult] = useState(null);         // For the response (text or image)
-  const [explanation, setExplanation] = useState(''); // For LLM-generated description
+  const [result, setResult] = useState({ plot: null, text: '', explanation: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleQuery = async () => {
     setLoading(true);
     setError('');
-    setResult(null);
-    setExplanation('');
+    setResult({ plot: null, text: '', explanation: '' });
+
     try {
-      const response = await fetch('/api/llm-eda', { // Adjust this endpoint to your backend
+      const response = await fetch('/api/llm-eda', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query }),
@@ -22,8 +24,12 @@ const LLMEDA = () => {
       const data = await response.json();
       if (data.error) throw new Error(data.error);
 
-      setResult(data.result);          // image (base64) or text
-      setExplanation(data.explanation); // text explanation from LLM
+      setResult({
+        plot: data.plot,
+        text: data.text,
+        explanation: data.explanation,
+        code: data.code,
+      });
     } catch (err) {
       setError(err.message || 'Something went wrong.');
     }
@@ -36,7 +42,7 @@ const LLMEDA = () => {
         Chat with your Data
       </Typography>
       <Typography variant="body1" gutterBottom>
-        Ask a question about your clinical metadata.<br/>
+        Ask a question about your clinical metadata.<br />
         (e.g. "Display a plot for how many patients with each PAM50 subtype are in the study")
       </Typography>
       <TextField
@@ -58,22 +64,43 @@ const LLMEDA = () => {
       {error && (
         <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>
       )}
-      {(result || explanation) && (
+      {(result.text || result.plot || result.explanation || result.code) && (
         <Paper elevation={3} sx={{ my: 3, p: 2 }}>
-          {result && (
-            typeof result === 'string' && result.startsWith('data:image') ? (
-              <img src={result} alt="Result Plot" style={{ maxWidth: '100%' }} />
-            ) : (
-              <Typography>{result}</Typography>
-            )
+          {result.text && (
+            <Typography sx={{ mb: 2 }}>{result.text}</Typography>
           )}
-          {explanation && (
+          {result.plot && (
+            <img src={result.plot} alt="Result Plot" style={{ maxWidth: '100%', marginBottom: 16 }} />
+          )}
+          {result.explanation && (
             <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
-              <strong>Explanation:</strong> {explanation}
+              <strong>Explanation:</strong> {result.explanation}
             </Typography>
+          )}
+          {result.code && (
+            <Accordion sx={{ mt: 2 }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>Show generated Python code</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <pre style={{
+                  background: "#f7f7f9",
+                  borderRadius: "4px",
+                  padding: "12px",
+                  overflowX: "auto",
+                  fontSize: "0.72rem",         // smaller font
+                  lineHeight: 1.5,
+                  // whiteSpace: "pre-wrap",      // enables wrapping
+                  // wordBreak: "break-word"      // ensures long words/lines wrap
+                }}>
+                  {result.code}
+                </pre>
+              </AccordionDetails>
+            </Accordion>
           )}
         </Paper>
       )}
+
     </Box>
   );
 };
