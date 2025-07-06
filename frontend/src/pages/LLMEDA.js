@@ -26,7 +26,8 @@ const LLMEDA = () => {
       });
       const data = await response.json();
       if (data.error) {
-        setError({ message: data.error, retry: data.retry || false });
+        setError({ message: data.error });
+        setRetry(data.retry || false);
         setLoading(false);
         return;
       }
@@ -34,7 +35,6 @@ const LLMEDA = () => {
       setResult({
         plot: data.plot,
         text: data.text,
-        explanation: data.explanation,
         code: data.code,
         steps: data.steps,
         evaluation: data.evaluation,
