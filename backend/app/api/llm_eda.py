@@ -12,6 +12,7 @@ import seaborn as sns
 import numpy as np
 import traceback
 import logging
+import lifelines
 from dotenv import load_dotenv
 from agents.planner import call_planner_llm
 from agents.coder import call_coder_llm
@@ -31,9 +32,6 @@ def get_full_path(relative_path):
 
 # Optional: Load your DataFrame here or in main.py and pass it
 clinical_df = pd.read_csv(get_full_path(os.getenv("CLINICAL_LLM")))  # Adjust path
-
-# clinical_path = os.getenv("CLINICAL_LLM")
-# print(f"CLINICAL file path loaded: {clinical_path}")
 
 
 llm_eda_api = Blueprint('llm_eda_api', __name__)
@@ -72,7 +70,14 @@ def llm_eda():
 
     # 3. Execute code
     buf = io.BytesIO()
-    local_env = {'clinical_df': clinical_df, 'plt': plt, 'pd': pd}
+    local_env = {
+        'clinical_df': clinical_df,
+        'plt': plt,
+        'pd': pd,
+        'lifelines': lifelines,   # <-- Make lifelines available in exec
+        'sns': sns,
+        'np': np
+    }
     try:
         logger.info("----RAW LLM CODE OUTPUT----\n%s\n------------------------------", code)
         exec(code, {}, local_env)
