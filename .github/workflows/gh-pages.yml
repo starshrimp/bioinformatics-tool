@@ -33,7 +33,7 @@ jobs:
 
       - name: Build
         env:
-          REACT_APP_BACKEND_URL: 'https://srmbioai.internet-box.ch/'
+          REACT_APP_BACKEND_URL: ${{ secrets.REACT_APP_BACKEND_URL }}
         run: npm run build
         working-directory: ./frontend
 
