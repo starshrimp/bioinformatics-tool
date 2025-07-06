@@ -12,10 +12,13 @@ const LLMEDA = () => {
   const [result, setResult] = useState({ plot: null, text: '', explanation: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [retry, setRetry] = useState(false);
+
 
   const handleQuery = async () => {
     setLoading(true);
     setError('');
+    setRetry(false);
     setResult({ plot: null, text: '', explanation: '' });
 
     try {
@@ -31,7 +34,7 @@ const LLMEDA = () => {
         setLoading(false);
         return;
       }
-
+      
       setResult({
         plot: data.plot,
         text: data.text,
@@ -40,8 +43,10 @@ const LLMEDA = () => {
         evaluation: data.evaluation,
         explanation: data.plot_explanation 
       });
+      setRetry(false);
     } catch (err) {
       setError(err.message || 'Something went wrong.');
+      setRetry(true);
     }
     setLoading(false);
   };
@@ -52,7 +57,8 @@ const LLMEDA = () => {
         Chat with your Data
       </Typography>
       <Typography variant="body1" gutterBottom>
-        Ask a question about your clinical metadata.<br />
+        In this section, you can interact with the clinical metadata in the GSE96058 breast cancer dataset. <br/>
+        To gain new insights, ask any question about your clinical metadata.<br />
         (e.g. "Display a plot for how many patients with each PAM50 subtype are in the study")
       </Typography>
       <TextField
@@ -74,10 +80,10 @@ const LLMEDA = () => {
       {error && (
         <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>
       )}
-      {error && result.retry ? (
+      {error && retry ? (
         <Box sx={{ mt: 2 }}>
           <Typography color="error">
-            {error}
+            {typeof error === "string" ? error : error.message}
           </Typography>
           <Button variant="outlined" onClick={handleQuery} sx={{ mt: 1 }}>
             Retry
@@ -85,9 +91,10 @@ const LLMEDA = () => {
         </Box>
       ) : error && (
         <Typography color="error" sx={{ mt: 2 }}>
-          {error}
+          {typeof error === "string" ? error : error.message}
         </Typography>
       )}
+
 
       {result.evaluation && (
         <Paper elevation={2} sx={{ my: 2, p: 2, background: "#e7f7eb" }}>
