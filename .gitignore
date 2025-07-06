@@ -11,6 +11,7 @@
 *.sqlite
 *.sqlite3
 **/.env.development
+__pycache__/
 *.pyc
 *.gz
 
