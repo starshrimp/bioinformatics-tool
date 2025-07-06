@@ -34,6 +34,7 @@ const LLMEDA = () => {
         code: data.code,
         steps: data.steps,
         evaluation: data.evaluation,
+        explanation: data.plot_explanation 
       });
     } catch (err) {
       setError(err.message || 'Something went wrong.');
@@ -104,13 +105,16 @@ const LLMEDA = () => {
 
           )}
           {result.plot && (
-            <img src={result.plot} alt="Result Plot" style={{ maxWidth: '100%', marginBottom: 16 }} />
+            <>
+              <img src={result.plot} alt="Result Plot" style={{ maxWidth: '100%', marginBottom: 16 }} />
+              {result.explanation && (
+                <Typography variant="caption" sx={{ display: "block", mt: 1, color: "text.secondary" }}>
+                  <strong>Plot Description:</strong> {result.explanation}
+                </Typography>
+              )}
+            </>
           )}
-          {result.explanation && (
-            <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
-              <strong>Explanation:</strong> {result.explanation}
-            </Typography>
-          )}
+
           {/* Analysis Plan */}
           {Array.isArray(result.steps) && result.steps.length > 0 && (
             <Accordion sx={{ mt: 2 }}>
