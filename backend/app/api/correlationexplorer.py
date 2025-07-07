@@ -1,7 +1,19 @@
 from flask import Blueprint, request, jsonify
 import numpy as np
 import pandas as pd
+import os
+import requests
+import xml.etree.ElementTree as ET
+from openai import OpenAI
 from utils.data_loader import load_expression, load_clinical
+
+
+
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+PUBMED_ESEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+PUBMED_EFETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 
 correlation_api = Blueprint('correlation_api', __name__, url_prefix='/api')
 
@@ -9,7 +21,9 @@ correlation_api = Blueprint('correlation_api', __name__, url_prefix='/api')
 def top_correlations():
     corr_type = request.args.get('type', 'gene_gene')
     expr_df = load_expression("filtered")
-    clinical_onehot = load_clinical('onehot')  # or your actual one-hot filename
+    clinical_onehot = load_clinical('onehot') 
+
+    clinical_onehot = clinical_onehot[[col for col in clinical_onehot.columns if 'prediction' not in col.lower()]]
 
     results = []
 
@@ -62,3 +76,83 @@ def top_correlations():
     # No NAs
     filtered = [r for r in results if r["correlation"] is not None and not np.isnan(r["correlation"]) and not np.isinf(r["correlation"])]
     return jsonify(filtered)
+
+
+def search_pubmed(query, max_results=5):
+    params = {
+        'db': 'pubmed',
+        'term': query,
+        'retmode': 'json',
+        'retmax': max_results
+    }
+    r = requests.get(PUBMED_ESEARCH_URL, params=params)
+    ids = r.json()['esearchresult']['idlist']
+    return ids
+
+def fetch_abstracts(pubmed_ids):
+    if not pubmed_ids:
+        return []
+    fetch_params = {
+        'db': 'pubmed',
+        'id': ','.join(pubmed_ids),
+        'retmode': 'xml'
+    }
+    r = requests.get(PUBMED_EFETCH_URL, params=fetch_params)
+    root = ET.fromstring(r.content)
+    results = []
+    for article in root.findall(".//PubmedArticle"):
+        pmid = article.findtext(".//PMID")
+        title = article.findtext(".//ArticleTitle")
+        abstract = article.findtext(".//Abstract/AbstractText")
+        results.append({
+            "pmid": pmid,
+            "title": title,
+            "abstract": abstract
+        })
+    return results
+
+def summarize_with_openai(prompt):
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.3,
+        max_tokens=500
+    )
+    return response.choices[0].message.content
+
+
+@correlation_api.route('/explore_correlation', methods=['POST'])
+def explore_correlation():
+    data = request.json
+    feature_1 = data.get('feature_1')
+    feature_2 = data.get('feature_2')
+
+    query = f'"{feature_1}" AND "{feature_2}" AND human'
+    pubmed_ids = search_pubmed(query, max_results=5)
+    if not pubmed_ids:
+        return jsonify({"summary": f"No relevant publications found in PubMed for {feature_1} and {feature_2}."})
+
+    abstracts = fetch_abstracts(pubmed_ids)
+    if not abstracts:
+        return jsonify({"summary": "No abstracts found for these PubMed IDs."})
+
+    # Prepare abstracts for prompt
+    formatted = "\n\n".join(
+        f"Title: {a['title']}\nAbstract: {a['abstract']}" for a in abstracts if a['abstract']
+    )
+    citation_list = [f"https://pubmed.ncbi.nlm.nih.gov/{a['pmid']}/" for a in abstracts if a['pmid']]
+
+    # LLM prompt
+    prompt = (
+        f"Given the following abstracts from PubMed, what is currently known about the relationship or correlation between '{feature_1}' and '{feature_2}' in human studies? "
+        "Summarize any key findings, and list up to 5 relevant citations (PubMed links) in your answer if possible.\n\n"
+        f"{formatted}\n\n"
+        f"Citations:\n" + "\n".join(citation_list)
+    )
+
+    llm_answer = summarize_with_openai(prompt)
+
+    return jsonify({
+        "summary": llm_answer,
+        "citations": citation_list
+    })

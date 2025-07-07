@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, FormControl, InputLabel, Select, MenuItem, Button, Box, Paper, CircularProgress, Dialog, DialogTitle, DialogContent } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
+
 
 const CORR_TYPES = [
   { value: 'gene_gene', label: 'Top 20 gene-gene' },
@@ -16,6 +18,8 @@ const CorrelationExplorer = () => {
   const [exploreResult, setExploreResult] = useState(null);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [exploreFeatures, setExploreFeatures] = useState({ feature_1: '', feature_2: '' });
+  const [citations, setCitations] = useState([]);
+
 
   // Fetch correlations on mount or when corrType changes
   useEffect(() => {
@@ -47,12 +51,15 @@ const CorrelationExplorer = () => {
       }
       const data = await response.json();
       setExploreResult(data.summary);
+      setCitations(data.citations || []);
     } catch (err) {
       setExploreResult('Could not fetch explanation: ' + err.message);
+      setCitations([]);
     } finally {
       setExploreLoading(false);
     }
   };
+
 
   return (
     <Box>
@@ -114,23 +121,20 @@ const CorrelationExplorer = () => {
         </Paper>
       )}
 
+
       {/* LLM/Research modal for correlation exploration */}
-      <Dialog open={exploreOpen} onClose={() => setExploreOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          Correlation: {exploreFeatures.feature_1} &amp; {exploreFeatures.feature_2}
-        </DialogTitle>
-        <DialogContent>
-          {exploreLoading ? (
-            <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
-              <CircularProgress />
-            </Box>
-          ) : (
-            <Typography>
-              {exploreResult}
-            </Typography>
-          )}
-        </DialogContent>
-      </Dialog>
+      <DialogContent>
+        {exploreLoading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <ReactMarkdown>
+            {exploreResult}
+          </ReactMarkdown>
+        )}
+      </DialogContent>
+
     </Box>
   );
 };
