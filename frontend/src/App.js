@@ -7,6 +7,7 @@ import EDA from './pages/EDA';
 import UMAP from './pages/UMAP';
 import LLMEDA from './pages/LLMEDA';
 import DifferentialExpression from './pages/DifferentialExpression';
+import CorrelationExplorer from './pages/CorrelationExplorer';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/eda" element={<EDA />} />
               <Route path="/differentialexpression" element={<DifferentialExpression />} />
+              <Route path="/correlationexplorer" element={<CorrelationExplorer />} />
               <Route path="/llmeda" element={<LLMEDA />} />
               <Route path="/umap" element={<UMAP />} />
             </Routes>

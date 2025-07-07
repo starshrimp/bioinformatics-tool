@@ -5,6 +5,7 @@ from flask_cors import CORS
 from api.umap import umap_api
 from api.llm_eda import llm_eda_api
 from api.differentialexpression import dea_api
+from api.correlationexplorer import correlation_api
 
 # Load environment variables from .env file
 load_dotenv()
@@ -23,6 +24,7 @@ def hello():
 app.register_blueprint(umap_api)
 app.register_blueprint(llm_eda_api)
 app.register_blueprint(dea_api)
+app.register_blueprint(correlation_api)
 
 if __name__ == "__main__":
     # Get configuration from environment variables
