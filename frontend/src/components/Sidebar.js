@@ -48,6 +48,9 @@ const Sidebar = () => {
             <ListItemButton sx={{ pl: 4 }} component={Link} to="/eda">
               <ListItemText primary="Exploratory Data Analysis" />
             </ListItemButton>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/differentialexpression">
+              <ListItemText primary="Differential Expression Analysis" />
+            </ListItemButton>
           </List>
         </Collapse>
         
