@@ -5,9 +5,10 @@ from utils.data_loader import load_expression, load_clinical
 from scipy.stats import ttest_ind
 from statsmodels.stats.multitest import multipletests
 
-dea_api = Blueprint('dea_api', __name__)
+dea_api = Blueprint('dea_api', __name__, url_prefix='/api')
 
-@dea_api.route('/api/dea', methods=['POST'])
+
+@dea_api.route('/dea', methods=['POST'])
 def api_dea():
     data = request.json
     clinical_variable = data['clinical_variable']
@@ -76,3 +77,18 @@ def api_dea():
         "volcano_data": volcano_data,
         "heatmap_data": heatmap
     })
+
+
+@dea_api.route('/clinical_variables', methods=['GET'])
+def api_clinical_variables():
+    clinical_df = load_clinical('llm')
+    clinical_vars = []
+    for col in clinical_df.columns:
+        values = clinical_df[col].dropna().unique().tolist()
+        # Only add categorical variables (not continuous)
+        if len(values) > 1 and len(values) < 25 and clinical_df[col].dtype in [object, 'category', 'bool']:
+            clinical_vars.append({
+                "name": col,
+                "groups": sorted([str(v) for v in values])
+            })
+    return jsonify(clinical_vars)

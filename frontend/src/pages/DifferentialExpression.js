@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
 import { Typography, FormControl, InputLabel, Select, MenuItem, Button, Box, Paper } from '@mui/material';
 
-const dummyClinicalVariables = [
-  { name: "pam50 subtype", groups: ["LumA", "LumB", "Basal", "Her2"] },
-  { name: "ER status", groups: ["Positive", "Negative"] }
-];
 
 const EDA = () => {
   const [clinicalVar, setClinicalVar] = useState("");
@@ -15,9 +11,18 @@ const EDA = () => {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [clinicalVariables, setClinicalVariables] = useState([]);
+
+  useEffect(() => {
+    // Fetch clinical variables on mount
+    fetch("/api/clinical_variables")
+      .then(res => res.json())
+      .then(setClinicalVariables)
+      .catch(err => setError("Could not load clinical variables: " + err.message));
+  }, []);
 
   const handleClinicalVarChange = (event) => {
-    const selected = dummyClinicalVariables.find(v => v.name === event.target.value);
+    const selected = clinicalVariables.find(v => v.name === event.target.value);
     setClinicalVar(event.target.value);
     setAvailableGroups(selected ? selected.groups : []);
     setGroupA("");
@@ -64,7 +69,7 @@ const EDA = () => {
         <FormControl sx={{ minWidth: 180 }}>
           <InputLabel>Clinical Variable</InputLabel>
           <Select value={clinicalVar} onChange={handleClinicalVarChange} label="Clinical Variable">
-            {dummyClinicalVariables.map((v) => (
+            {clinicalVariables.map((v) => (
               <MenuItem key={v.name} value={v.name}>{v.name}</MenuItem>
             ))}
           </Select>
@@ -105,7 +110,7 @@ const EDA = () => {
           <Typography color="error">{error}</Typography>
         ) : results ? (
           <Paper sx={{ p: 2 }}>
-            <Typography variant="h6">Results</Typography>
+            <Typography variant="h5">Results</Typography>
             {/* Table */}
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle1">Top Differentially Expressed Genes</Typography>
@@ -143,7 +148,9 @@ const EDA = () => {
             </Box>
             {/* Volcano Plot */}
             <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1">Volcano Plot</Typography>
+              <Box sx={{ mt: 4 }}>
+                <Typography variant="h5">Volcano Plot</Typography>
+              </Box>
               {results.volcano_data ? (
                 <Plot
                   data={[
@@ -183,9 +190,25 @@ const EDA = () => {
                 <Typography>No volcano plot generated.</Typography>
               )}
             </Box>
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="subtitle1"><strong>How to read this plot:</strong></Typography>
+              <Typography variant="body2" color="textSecondary">
+                
+                Each dot represents a gene. The x-axis shows the log<sub>2</sub> fold change between groups (how much a gene is up- or downregulated), and the y-axis shows the statistical significance (−log<sub>10</sub>(p-value)).
+                <br /><br />
+                The <span style={{ color: "#888", fontWeight: "bold" }}>grey dashed horizontal line</span> marks the threshold for statistical significance at p = 0.05 (−log<sub>10</sub>(0.05) ≈ 1.3).<br />
+                <span style={{ color: "grey", fontWeight: "bold" }}>Red dots above this line</span> indicate genes with p-values less than 0.05 (statistically significant differences before correction for multiple testing).<br />
+                <span style={{ color: "grey", fontWeight: "bold" }}>Grey dots</span> are not statistically significant (p ≥ 0.05).
+                <br /><br />
+                Note: Statistical significance should be interpreted in the context of multiple testing (e.g., adjusted p-values/FDR), not just raw p-values.
+              </Typography>
+            </Box>
+
             {/* Heatmap */}
             <Box>
-              <Typography variant="subtitle1">Heatmap</Typography>
+              <Box sx={{ mt: 4 }}>
+                <Typography variant="h5">Heatmap</Typography>
+              </Box>
               {results.heatmap_data ? (
                 <Plot
                   data={[
