@@ -68,6 +68,7 @@ const CorrelationExplorer = () => {
       </Typography>
       <Typography variant="body1" gutterBottom>
         Explore the strongest correlations in the dataset. Select a correlation type and click "Explore this correlation" for more info.
+        <br /> Upon clicking, The backend searches PubMed for articles mentioning both features, retrieves relevant abstracts, and sends them to the OpenAI API for summarization. The LLM returns a readable summary of what’s known about their relationship, including up to five PubMed citation links.
       </Typography>
 
       <Box sx={{ my: 2, display: "flex", alignItems: "center", gap: 2 }}>
