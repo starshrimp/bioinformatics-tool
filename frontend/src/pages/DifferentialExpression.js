@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import Plot from 'react-plotly.js';
 import { Typography, FormControl, InputLabel, Select, MenuItem, Button, Box, Paper } from '@mui/material';
 
 const dummyClinicalVariables = [
-  { name: "PAM50 subtype", groups: ["LumA", "LumB", "Basal", "Her2"] },
+  { name: "pam50 subtype", groups: ["LumA", "LumB", "Basal", "Her2"] },
   { name: "ER status", groups: ["Positive", "Negative"] }
 ];
 
@@ -12,8 +13,9 @@ const EDA = () => {
   const [groupB, setGroupB] = useState("");
   const [availableGroups, setAvailableGroups] = useState([]);
   const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Update groups when clinical variable changes
   const handleClinicalVarChange = (event) => {
     const selected = dummyClinicalVariables.find(v => v.name === event.target.value);
     setClinicalVar(event.target.value);
@@ -22,13 +24,31 @@ const EDA = () => {
     setGroupB("");
   };
 
-  const handleRunDE = () => {
-    // Placeholder: Run DE API call here, setResults with response
-    setResults({
-      table: "DE gene table here",
-      volcano: "Volcano plot here",
-      heatmap: "Heatmap here"
-    });
+  const handleRunDE = async () => {
+    setLoading(true);
+    setError(null);
+    setResults(null);
+    try {
+      const response = await fetch("/api/dea", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clinical_variable: clinicalVar,
+          group_a: groupA,
+          group_b: groupB,
+        }),
+      });
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "An error occurred during the DE analysis.");
+      }
+      const data = await response.json();
+      setResults(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -79,13 +99,115 @@ const EDA = () => {
       </Box>
 
       <Box sx={{ mt: 4 }}>
-        {results ? (
+        {loading ? (
+          <Typography variant="body2">Running analysis…</Typography>
+        ) : error ? (
+          <Typography color="error">{error}</Typography>
+        ) : results ? (
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6">Results</Typography>
-            <Typography>Table: {results.table}</Typography>
-            <Typography>Volcano plot: {results.volcano}</Typography>
-            <Typography>Heatmap: {results.heatmap}</Typography>
-            {/* Replace above lines with actual components (DataGrid, Plot, etc.) once backend is ready */}
+            {/* Table */}
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle1">Top Differentially Expressed Genes</Typography>
+              {results.table.length === 0 ? (
+                <Typography>No differentially expressed genes found.</Typography>
+              ) : (
+                <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "1em" }}>
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: "left", padding: "8px", fontWeight: "bold", borderBottom: "2px solid #ccc" }}>Gene</th>
+                      <th style={{ textAlign: "left", padding: "8px", fontWeight: "bold", borderBottom: "2px solid #ccc" }}>log2FC</th>
+                      <th style={{ textAlign: "left", padding: "8px", fontWeight: "bold", borderBottom: "2px solid #ccc" }}>p-value</th>
+                      <th style={{ textAlign: "left", padding: "8px", fontWeight: "bold", borderBottom: "2px solid #ccc" }}>adj p-value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.table.map((row) => (
+                      <tr key={row.gene}>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>{row.gene}</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
+                          {row.log2FC !== null && !isNaN(row.log2FC) ? row.log2FC.toFixed(2) : "NA"}
+                        </td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
+                          {row.p_value !== null && !isNaN(row.p_value) ? row.p_value.toExponential(2) : "NA"}
+                        </td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
+                          {row.p_adj !== null && !isNaN(row.p_adj) ? row.p_adj.toExponential(2) : "NA"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+              )}
+            </Box>
+            {/* Volcano Plot */}
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle1">Volcano Plot</Typography>
+              {results.volcano_data ? (
+                <Plot
+                  data={[
+                    {
+                      x: results.volcano_data.log2fc,
+                      y: results.volcano_data.neglog10p,
+                      mode: "markers",
+                      type: "scatter",
+                      text: results.volcano_data.gene,
+                      marker: {
+                        color: results.volcano_data.p_adj.map((p) =>
+                          p !== null && p < 0.05 ? "red" : "grey"
+                        ),
+                        size: 8,
+                        opacity: 0.7,
+                      },
+                    },
+                  ]}
+                  layout={{
+                    title: "Volcano Plot",
+                    xaxis: { title: "log2 Fold Change" },
+                    yaxis: { title: "-log10(p-value)" },
+                    shapes: [
+                      {
+                        type: "line",
+                        x0: Math.min(...results.volcano_data.log2fc),
+                        x1: Math.max(...results.volcano_data.log2fc),
+                        y0: -Math.log10(0.05),
+                        y1: -Math.log10(0.05),
+                        line: { color: "grey", dash: "dash" },
+                      },
+                    ],
+                  }}
+                  style={{ width: "100%", height: "400px" }}
+                />
+              ) : (
+                <Typography>No volcano plot generated.</Typography>
+              )}
+            </Box>
+            {/* Heatmap */}
+            <Box>
+              <Typography variant="subtitle1">Heatmap</Typography>
+              {results.heatmap_data ? (
+                <Plot
+                  data={[
+                    {
+                      z: results.heatmap_data.values,
+                      x: results.heatmap_data.samples,
+                      y: results.heatmap_data.genes,
+                      type: "heatmap",
+                      colorscale: "Viridis",
+                    },
+                  ]}
+                  layout={{
+                    title: "Heatmap: Top DE genes",
+                    xaxis: { title: "Sample" },
+                    yaxis: { title: "Gene" },
+                  }}
+                  style={{ width: "100%", height: "400px" }}
+                />
+              ) : (
+                <Typography>No heatmap generated.</Typography>
+              )}
+            </Box>
           </Paper>
         ) : (
           <Typography variant="body2" color="textSecondary">

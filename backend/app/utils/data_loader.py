@@ -37,8 +37,12 @@ def load_expression(matrix_choice):
     else:
         raise ValueError("Unsupported file format for expression matrix: " + path)
 
-def load_clinical():
-    path = os.getenv("CLINICAL")
+def load_clinical(clinical_choice):
+    logging.info(f"Loading clinical data with choice: {clinical_choice}")
+    if clinical_choice == "onehot":
+        path = os.getenv("CLINICAL")
+    elif clinical_choice == "llm":
+        path = os.getenv("CLINICAL_LLM")
     if not path:
         raise ValueError("File path for clinical data is not set!")
     path = get_full_path(path)
