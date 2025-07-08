@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, FormControl, InputLabel, Select, MenuItem, Button, Box, Paper, CircularProgress, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
+import InfoIcon from '@mui/icons-material/Info';
 
 
 const CORR_TYPES = [
@@ -112,7 +113,7 @@ const CorrelationExplorer = () => {
                   </td>
                   <td style={{ padding: "8px", borderBottom: "1px solid #eee" }}>
                     <Button size="small" onClick={() => handleExplore(row.feature_1, row.feature_2)}>
-                      Explore this correlation
+                      <InfoIcon color="primary" /> Explore
                     </Button>
                   </td>
                 </tr>
@@ -124,17 +125,36 @@ const CorrelationExplorer = () => {
 
 
       {/* LLM/Research modal for correlation exploration */}
-      <DialogContent>
-        {exploreLoading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <ReactMarkdown>
-            {exploreResult}
-          </ReactMarkdown>
-        )}
-      </DialogContent>
+
+      <Dialog open={exploreOpen} onClose={() => setExploreOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <InfoIcon color="primary" />
+          Correlation: {exploreFeatures.feature_1} &amp; {exploreFeatures.feature_2}
+        </DialogTitle>
+        <DialogContent>
+          {exploreLoading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <>
+              <ReactMarkdown>{exploreResult}</ReactMarkdown>
+              {citations.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                  <Typography variant="subtitle2">Citations</Typography>
+                  <ul>
+                    {citations.map(link => (
+                      <li key={link}>
+                        <a href={link} target="_blank" rel="noopener noreferrer">{link}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </Box>
+              )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
     </Box>
   );

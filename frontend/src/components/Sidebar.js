@@ -22,6 +22,7 @@ const Sidebar = () => {
     <Box
       sx={{
         width: 250,
+        flexShrink: 0,
         borderRight: '1px solid #ddd',
         bgcolor: '#f9f9f9',
         p: 2.5,

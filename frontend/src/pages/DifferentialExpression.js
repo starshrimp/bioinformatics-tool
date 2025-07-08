@@ -3,7 +3,7 @@ import Plot from 'react-plotly.js';
 import { Typography, FormControl, InputLabel, Select, MenuItem, Button, Box, Paper } from '@mui/material';
 
 
-const EDA = () => {
+const DifferentialExpression = () => {
   const [clinicalVar, setClinicalVar] = useState("");
   const [groupA, setGroupA] = useState("");
   const [groupB, setGroupB] = useState("");
@@ -242,4 +242,4 @@ const EDA = () => {
   );
 };
 
-export default EDA;
+export default DifferentialExpression;
