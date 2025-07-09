@@ -22,7 +22,7 @@ const CorrelationExplorer = () => {
   const [exploreOpen, setExploreOpen] = useState(false);
   const [exploreFeatures, setExploreFeatures] = useState({ feature_1: '', feature_2: '' });
   const [citations, setCitations] = useState([]);
-  const [presetFeature, setPresetFeature] = useState(''); // For gene/clinical filter
+// Removed unused presetFeature state declaration
   const [presetGene, setPresetGene] = useState('');
   const [presetClinical, setPresetClinical] = useState('');
   const [geneOptions, setGeneOptions] = useState([]);
