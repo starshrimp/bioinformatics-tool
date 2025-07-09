@@ -39,7 +39,7 @@ To download, understand and preprocess the data, these steps were taken:
 
 
 **Notebooks & Scripts**
-- [01_data_preprocessing_expr.ipynb`](analysis/01_data_preprocessing_expr.ipynb) — Gene expression data download & cleaning
+- [`01_data_preprocessing_expr.ipynb`](analysis/01_data_preprocessing_expr.ipynb) — Gene expression data download & cleaning
 - [`02_data_preprocessing_clinical.ipynb`](analysis/02_data_preprocessing_clinical.ipynb) — Clinical metadata download & cleaning
 
 **Outputs**
