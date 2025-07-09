@@ -22,7 +22,7 @@ const LLMEDA = () => {
     setResult({ plot: null, text: '', explanation: '' });
 
     try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; 
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || ""; 
       const response = await fetch(`${BACKEND_URL}/api/llm-eda`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -136,46 +136,52 @@ const LLMEDA = () => {
             </>
           )}
 
-          {/* Analysis Plan */}
-          {Array.isArray(result.steps) && result.steps.length > 0 && (
-            <Accordion sx={{ mt: 2 }}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>Show analysis plan (from Planner LLM)</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ol style={{ marginLeft: 16 }}>
-                  {result.steps.map((step, idx) => (
-                    <li key={idx} style={{ marginBottom: 8 }}>{step}</li>
-                  ))}
-                </ol>
-              </AccordionDetails>
-            </Accordion>
-          )}
-          {/* Python code collapsible */}
-          {result.code && (
-            <Accordion sx={{ mt: 2 }}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>Show generated Python code (from Coder LLM)</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <pre style={{
-                  background: "#f7f7f9",
-                  borderRadius: "4px",
-                  padding: "12px",
-                  overflowX: "auto",
-                  fontSize: "0.72rem",         // smaller font
-                  lineHeight: 1.5,
-                  // whiteSpace: "pre-wrap",      // enables wrapping
-                  // wordBreak: "break-word"      // ensures long words/lines wrap
-                }}>
-                  {result.code}
-                </pre>
-              </AccordionDetails>
-            </Accordion>
-          )}
         </Paper>
       )}
-
+      {(result.text || result.plot || result.explanation || result.code) && (
+        <Paper elevation={3} sx={{ my: 3, p: 2 }}>
+            <Typography variant="h5" sx={{ mb: 1 }}>
+              📝 Analysis Plan and Generated Code
+            </Typography>                 
+            {/* Analysis Plan */}
+            {Array.isArray(result.steps) && result.steps.length > 0 && (
+              <Accordion sx={{ mt: 2 }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>Show analysis plan (from Planner LLM)</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ol style={{ marginLeft: 16 }}>
+                    {result.steps.map((step, idx) => (
+                      <li key={idx} style={{ marginBottom: 8 }}>{step}</li>
+                    ))}
+                  </ol>
+                </AccordionDetails>
+              </Accordion>
+            )}
+            {/* Python code collapsible */}
+            {result.code && (
+              <Accordion sx={{ mt: 2 }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>Show generated Python code (from Coder LLM)</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <pre style={{
+                    background: "#f7f7f9",
+                    borderRadius: "4px",
+                    padding: "12px",
+                    overflowX: "auto",
+                    fontSize: "0.72rem",         // smaller font
+                    lineHeight: 1.5,
+                    // whiteSpace: "pre-wrap",      // enables wrapping
+                    // wordBreak: "break-word"      // ensures long words/lines wrap
+                  }}>
+                    {result.code}
+                  </pre>
+                </AccordionDetails>
+              </Accordion>
+            )}
+        </Paper>
+      )}
     </Box>
   );
 };

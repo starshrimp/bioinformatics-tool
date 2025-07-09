@@ -15,10 +15,10 @@ __pycache__/
 *.pyc
 *.gz
 
+*.env
+
 # Environment files
-.env
 .env.local
-**/.env
 **/.env.local
 
 # Keep example files

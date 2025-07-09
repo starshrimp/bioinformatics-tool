@@ -22,6 +22,7 @@ const Sidebar = () => {
     <Box
       sx={{
         width: 250,
+        flexShrink: 0,
         borderRight: '1px solid #ddd',
         bgcolor: '#f9f9f9',
         p: 2.5,
@@ -37,19 +38,13 @@ const Sidebar = () => {
         <ListItemButton component={Link} to="/llmeda">
           <ListItemText primary="Data Copilot 💬" />
         </ListItemButton>
-        
-        {/* Data Analysis with dropdown */}
-        <ListItemButton onClick={() => handleToggle('dataAnalysis')}>
-          <ListItemText primary="Data Analysis 📈" />
-          {openMenus.dataAnalysis ? <ExpandLess /> : <ExpandMore />}
+        <ListItemButton component={Link} to="/correlationexplorer">
+          <ListItemText primary="Correlation Explorer 🔗" />
         </ListItemButton>
-        <Collapse in={openMenus.dataAnalysis} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/eda">
-              <ListItemText primary="Exploratory Data Analysis" />
-            </ListItemButton>
-          </List>
-        </Collapse>
+        
+        <ListItemButton component={Link} to="/differentialexpression">
+          <ListItemText primary="Differential Expression Analysis 🧬" />
+        </ListItemButton>
         
         {/* Unsupervised ML with dropdown */}
         <ListItemButton onClick={() => handleToggle('unsupervised')}>
@@ -82,6 +77,18 @@ const Sidebar = () => {
             </ListItemButton>
             <ListItemButton sx={{ pl: 4 }} component={Link} to="/regression">
               <ListItemText primary="Regression" />
+            </ListItemButton>
+          </List>
+        </Collapse>
+        {/* Data Analysis with dropdown */}
+        <ListItemButton onClick={() => handleToggle('dataAnalysis')}>
+          <ListItemText primary="Jupyter Notebooks 📓" />
+          {openMenus.dataAnalysis ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={openMenus.dataAnalysis} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/eda">
+              <ListItemText primary="Exploratory Data Analysis" />
             </ListItemButton>
           </List>
         </Collapse>

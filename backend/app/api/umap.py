@@ -18,7 +18,7 @@ def api_umap():
     include_clinical = data['include_clinical']
 
     expr_df = load_expression(matrix_choice)
-    clinical_df = load_clinical()
+    clinical_df = load_clinical('onehot')  
 
     # Align
     common_samples = expr_df.index.intersection(clinical_df.index)
