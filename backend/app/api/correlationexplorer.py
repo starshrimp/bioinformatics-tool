@@ -26,7 +26,7 @@ PUBMED_EFETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 
 correlation_api = Blueprint('correlation_api', __name__, url_prefix='/api')
 
-@correlation_api.route('/api/top_correlations', methods=['GET'])
+@correlation_api.route('top-correlations', methods=['GET'])
 def top_correlations():
     corr_type = request.args.get('type', 'gene_gene')
     preset_feature = request.args.get('feature', None) 
@@ -153,7 +153,7 @@ def summarize_with_openai(prompt):
     return response.choices[0].message.content
 
 
-@correlation_api.route('/api/explore-correlation', methods=['POST'])
+@correlation_api.route('/explore-correlation', methods=['POST'])
 def explore_correlation():
     data = request.json
     feature_1 = data.get('feature_1')
@@ -189,12 +189,12 @@ def explore_correlation():
         "citations": citation_list
     })
 
-@correlation_api.route('/api/list-genes', methods=['GET'])
+@correlation_api.route('/list-genes', methods=['GET'])
 def list_genes():
     expr_df = load_expression("filtered")
     return jsonify(sorted(expr_df.columns.tolist()))
 
-@correlation_api.route('/api/list-clinical', methods=['GET'])
+@correlation_api.route('/list-clinical', methods=['GET'])
 def list_clinical():
     clinical_onehot = load_clinical('onehot')
     # Optionally filter out predictions or non-user-facing columns
