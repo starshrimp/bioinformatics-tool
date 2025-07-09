@@ -34,7 +34,7 @@ def get_full_path(relative_path):
 def truncate_table_markdown(text, max_rows=30):
     lines = text.split('\n')
     if len(lines) > max_rows + 2:  # +2 for header/sep
-        return '\n'.join(lines[:max_rows+2]) + '\n... (table truncated, showing first 10 rows)'
+        return '\n'.join(lines[:max_rows+2]) + f'\n... (table truncated, showing first {max_rows} rows)'
     return text
 
 
