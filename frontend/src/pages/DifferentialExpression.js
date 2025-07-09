@@ -12,10 +12,11 @@ const DifferentialExpression = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [clinicalVariables, setClinicalVariables] = useState([]);
-
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "";
+  
   useEffect(() => {
     // Fetch clinical variables on mount
-    fetch("/api/clinical_variables")
+    fetch(`${BACKEND_URL}/api/clinical-variables`)
       .then(res => res.json())
       .then(setClinicalVariables)
       .catch(err => setError("Could not load clinical variables: " + err.message));
@@ -34,7 +35,7 @@ const DifferentialExpression = () => {
     setError(null);
     setResults(null);
     try {
-      const response = await fetch("/api/dea", {
+      const response = await fetch(`${BACKEND_URL}/api/dea`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

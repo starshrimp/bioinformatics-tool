@@ -27,26 +27,26 @@ const CorrelationExplorer = () => {
   const [presetClinical, setPresetClinical] = useState('');
   const [geneOptions, setGeneOptions] = useState([]);
   const [clinicalOptions, setClinicalOptions] = useState([]);
-
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "";
 
   // Fetch correlations on mount or when corrType changes
   useEffect(() => {
     setLoading(true);
     setError(null);
     setCorrelations([]);
-    fetch('/api/list_genes')
+    fetch(`${BACKEND_URL}/api/list-genes`)
       .then(res => res.json())
       .then(setGeneOptions)
       .catch(() => setGeneOptions([])); // fallback if error
 
-    fetch('/api/list_clinical')
+    fetch(`${BACKEND_URL}/api/list-clinical`)
       .then(res => res.json())
       .then(setClinicalOptions)
       .catch(() => setClinicalOptions([]));
 
     // Fetch correlations based on conditions
     if (!presetGene && !presetClinical) {
-      fetch(`/api/top_correlations?type=${corrType}`)
+      fetch(`${BACKEND_URL} /api/top_correlations?type=${corrType}`)
         .then(res => res.json())
         .then(setCorrelations)
         .catch(err => setError('Could not load correlations: ' + err.message))
@@ -63,7 +63,7 @@ const CorrelationExplorer = () => {
     setExploreOpen(true);
     setExploreFeatures({ feature_1, feature_2 });
     try {
-      const response = await fetch('/api/explore_correlation', {
+      const response = await fetch(`${BACKEND_URL}/api/explore-correlation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ feature_1, feature_2 })

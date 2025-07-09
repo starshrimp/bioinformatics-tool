@@ -8,7 +8,7 @@ from statsmodels.stats.multitest import multipletests
 dea_api = Blueprint('dea_api', __name__, url_prefix='/api')
 
 
-@dea_api.route('/dea', methods=['POST'])
+@dea_api.route('/api/dea', methods=['POST'])
 def api_dea():
     data = request.json
     clinical_variable = data['clinical_variable']
@@ -79,7 +79,7 @@ def api_dea():
     })
 
 
-@dea_api.route('/clinical_variables', methods=['GET'])
+@dea_api.route('/api/clinical-variables', methods=['GET'])
 def api_clinical_variables():
     clinical_df = load_clinical('llm')
     clinical_vars = []

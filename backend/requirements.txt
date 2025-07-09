@@ -12,6 +12,7 @@ xgboost
 GEOparse
 matplotlib
 seaborn
+statsmodels
 tabulate
 tqdm
 requests
