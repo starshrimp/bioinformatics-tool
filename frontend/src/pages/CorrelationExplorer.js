@@ -46,7 +46,7 @@ const CorrelationExplorer = () => {
 
     // Fetch correlations based on conditions
     if (!presetGene && !presetClinical) {
-      fetch(`${BACKEND_URL} /api/top_correlations?type=${corrType}`)
+      fetch(`${BACKEND_URL}/api/top-correlations?type=${corrType}`)
         .then(res => res.json())
         .then(setCorrelations)
         .catch(err => setError('Could not load correlations: ' + err.message))
@@ -140,7 +140,7 @@ const CorrelationExplorer = () => {
           onClick={() => {
             setLoading(true);
             const filterValue = presetGene || presetClinical;
-            fetch(`/api/top_correlations?type=${corrType}&feature=${encodeURIComponent(filterValue)}`)
+            fetch(`${BACKEND_URL}/api/top-correlations?type=${corrType}&feature=${encodeURIComponent(filterValue)}`)
               .then(res => res.json())
               .then(setCorrelations)
               .catch(err => setError('Could not load correlations: ' + err.message))
