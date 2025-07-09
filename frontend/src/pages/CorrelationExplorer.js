@@ -22,7 +22,7 @@ const CorrelationExplorer = () => {
   const [exploreOpen, setExploreOpen] = useState(false);
   const [exploreFeatures, setExploreFeatures] = useState({ feature_1: '', feature_2: '' });
   const [citations, setCitations] = useState([]);
-// Removed unused presetFeature state declaration
+  
   const [presetGene, setPresetGene] = useState('');
   const [presetClinical, setPresetClinical] = useState('');
   const [geneOptions, setGeneOptions] = useState([]);
@@ -100,7 +100,6 @@ const CorrelationExplorer = () => {
             value={corrType}
             onChange={e => {
               setCorrType(e.target.value);
-              setPresetFeature('');
             }}
             label="Correlation Type"
           >
