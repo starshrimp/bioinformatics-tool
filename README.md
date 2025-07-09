@@ -17,7 +17,7 @@ To download, understand and preprocess the data, these steps were taken:
 1. Transposition: despite common practice of gene x samples default for most microarray, RNA-seq, and general bioinformatics data formats -> but for ML more practical
 2. Removal of Constant & Low Expression Genes
 3. Quality Check:
-  - Distribution of Expression accross Samples: remove top 1% highest and 1% lowest expression samples
+  - Distribution of Expression across Samples: remove top 1% highest and 1% lowest expression samples
   - Highest number of unexpressed Genes -> remove 1% of lowest 
   - Analyse Technical Replicates: Strategy
     - good agreement (>0.95 pearson): average the original and the technical replicate
