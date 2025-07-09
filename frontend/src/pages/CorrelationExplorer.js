@@ -54,7 +54,7 @@ const CorrelationExplorer = () => {
     } else {
       setLoading(false); // No fetch needed if presetGene or presetClinical is set
     }
-  }, [corrType, presetGene, presetClinical]);
+  }, [corrType, presetGene, presetClinical, BACKEND_URL]);
 
   // Explore correlation (calls LLM or summary API)
   const handleExplore = async (feature_1, feature_2) => {

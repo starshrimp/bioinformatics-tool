@@ -20,7 +20,7 @@ const DifferentialExpression = () => {
       .then(res => res.json())
       .then(setClinicalVariables)
       .catch(err => setError("Could not load clinical variables: " + err.message));
-  }, []);
+  }, [BACKEND_URL]);
 
   const handleClinicalVarChange = (event) => {
     const selected = clinicalVariables.find(v => v.name === event.target.value);
