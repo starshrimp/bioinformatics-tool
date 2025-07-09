@@ -40,9 +40,11 @@ def load_expression(matrix_choice):
 def load_clinical(clinical_choice):
     logging.info(f"Loading clinical data with choice: {clinical_choice}")
     if clinical_choice == "onehot":
-        path = os.getenv("CLINICAL")
+        path = os.getenv("CLINICAL_ONEHOT")
     elif clinical_choice == "llm":
         path = os.getenv("CLINICAL_LLM")
+    elif clinical_choice == "CLINICAL":
+        path = os.getenv("CLINICAL")
     if not path:
         raise ValueError("File path for clinical data is not set!")
     path = get_full_path(path)
