@@ -17,6 +17,7 @@ COPY requirements.txt .
 COPY data/parquet/ ./data/parquet/
 COPY data/GSE96058_clinical_metadata_cleaned.csv ./data/
 COPY data/GSE96058_clinical_LLM.csv ./data/
+COPY data/GSE96058_clinical_onehot.csv ./data/
 
 # Copy appropriate environment configuration
 COPY .env.${ENV} ./.env

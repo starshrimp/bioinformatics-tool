@@ -6,8 +6,17 @@ import requests
 import xml.etree.ElementTree as ET
 from openai import OpenAI
 from utils.data_loader import load_expression, load_clinical
+from dotenv import load_dotenv
 
 
+BACKEND_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) # points to /backend/app
+dotenv_path = os.path.join(BACKEND_ROOT, ".env")
+load_dotenv(dotenv_path=dotenv_path)
+
+
+
+def get_full_path(relative_path):
+    return os.path.join(BACKEND_ROOT, relative_path)
 
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -17,7 +26,7 @@ PUBMED_EFETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 
 correlation_api = Blueprint('correlation_api', __name__, url_prefix='/api')
 
-@correlation_api.route('/top_correlations', methods=['GET'])
+@correlation_api.route('/api/top_correlations', methods=['GET'])
 def top_correlations():
     corr_type = request.args.get('type', 'gene_gene')
     preset_feature = request.args.get('feature', None) 
@@ -144,7 +153,7 @@ def summarize_with_openai(prompt):
     return response.choices[0].message.content
 
 
-@correlation_api.route('/explore_correlation', methods=['POST'])
+@correlation_api.route('/api/explore-correlation', methods=['POST'])
 def explore_correlation():
     data = request.json
     feature_1 = data.get('feature_1')
@@ -180,12 +189,12 @@ def explore_correlation():
         "citations": citation_list
     })
 
-@correlation_api.route('/list_genes', methods=['GET'])
+@correlation_api.route('/api/list-genes', methods=['GET'])
 def list_genes():
     expr_df = load_expression("filtered")
     return jsonify(sorted(expr_df.columns.tolist()))
 
-@correlation_api.route('/list_clinical', methods=['GET'])
+@correlation_api.route('/api/list-clinical', methods=['GET'])
 def list_clinical():
     clinical_onehot = load_clinical('onehot')
     # Optionally filter out predictions or non-user-facing columns
