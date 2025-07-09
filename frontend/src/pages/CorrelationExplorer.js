@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Typography, FormControl, InputLabel, Select, MenuItem, Button, Box, Paper, CircularProgress, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import InfoIcon from '@mui/icons-material/Info';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 
 const CORR_TYPES = [
@@ -11,7 +13,7 @@ const CORR_TYPES = [
 ];
 
 const CorrelationExplorer = () => {
-  const [corrType, setCorrType] = useState(CORR_TYPES[0].value);
+  const [corrType, setCorrType] = useState(CORR_TYPES[1].value);
   const [correlations, setCorrelations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [exploreLoading, setExploreLoading] = useState(false);
@@ -20,6 +22,11 @@ const CorrelationExplorer = () => {
   const [exploreOpen, setExploreOpen] = useState(false);
   const [exploreFeatures, setExploreFeatures] = useState({ feature_1: '', feature_2: '' });
   const [citations, setCitations] = useState([]);
+  const [presetFeature, setPresetFeature] = useState(''); // For gene/clinical filter
+  const [presetGene, setPresetGene] = useState('');
+  const [presetClinical, setPresetClinical] = useState('');
+  const [geneOptions, setGeneOptions] = useState([]);
+  const [clinicalOptions, setClinicalOptions] = useState([]);
 
 
   // Fetch correlations on mount or when corrType changes
@@ -27,12 +34,32 @@ const CorrelationExplorer = () => {
     setLoading(true);
     setError(null);
     setCorrelations([]);
+    fetch('/api/list_genes')
+      .then(res => res.json())
+      .then(setGeneOptions)
+      .catch(() => setGeneOptions([])); // fallback if error
+
+    fetch('/api/list_clinical')
+      .then(res => res.json())
+      .then(setClinicalOptions)
+      .catch(() => setClinicalOptions([]));
     fetch(`/api/top_correlations?type=${corrType}`)
       .then(res => res.json())
       .then(setCorrelations)
       .catch(err => setError('Could not load correlations: ' + err.message))
       .finally(() => setLoading(false));
   }, [corrType]);
+
+  useEffect(() => {
+  if (!presetGene && !presetClinical) {
+    setLoading(true);
+    fetch(`/api/top_correlations?type=${corrType}`)
+      .then(res => res.json())
+      .then(setCorrelations)
+      .catch(err => setError('Could not load correlations: ' + err.message))
+      .finally(() => setLoading(false));
+  }
+}, [presetGene, presetClinical, corrType]);
 
   // Explore correlation (calls LLM or summary API)
   const handleExplore = async (feature_1, feature_2) => {
@@ -71,13 +98,15 @@ const CorrelationExplorer = () => {
         Explore the strongest correlations in the dataset. Select a correlation type and click "Explore this correlation" for more info.
         <br /> Upon clicking, The backend searches PubMed for articles mentioning both features, retrieves relevant abstracts, and sends them to the OpenAI API for summarization. The LLM returns a readable summary of what’s known about their relationship, including up to five PubMed citation links.
       </Typography>
-
       <Box sx={{ my: 2, display: "flex", alignItems: "center", gap: 2 }}>
         <FormControl sx={{ minWidth: 220 }}>
           <InputLabel>Correlation Type</InputLabel>
           <Select
             value={corrType}
-            onChange={e => setCorrType(e.target.value)}
+            onChange={e => {
+              setCorrType(e.target.value);
+              setPresetFeature('');
+            }}
             label="Correlation Type"
           >
             {CORR_TYPES.map(opt => (
@@ -85,6 +114,49 @@ const CorrelationExplorer = () => {
             ))}
           </Select>
         </FormControl>
+        {corrType === 'gene_clinical' && (
+          <>
+            <Autocomplete
+              freeSolo
+              options={geneOptions}
+              inputValue={presetGene}
+              onInputChange={(_, value) => {
+                setPresetGene(value);
+                setPresetClinical(''); // Clear the clinical filter when gene is changed
+              }}
+              renderInput={params => <TextField {...params} label="Gene (optional)" variant="outlined" />}
+              sx={{ width: 200 }}
+            />
+
+            <Autocomplete
+              options={clinicalOptions}
+              value={presetClinical}
+              onChange={(_, value) => {
+                setPresetClinical(value || '');
+                setPresetGene(''); // Clear the gene filter when clinical is changed
+              }}
+              renderInput={params => <TextField {...params} label="Clinical variable (optional)" />}
+              sx={{ width: 200 }}
+            />
+
+          </>
+        )}
+        <Button
+          variant="outlined"
+          onClick={() => {
+            setLoading(true);
+            const filterValue = presetGene || presetClinical;
+            fetch(`/api/top_correlations?type=${corrType}&feature=${encodeURIComponent(filterValue)}`)
+              .then(res => res.json())
+              .then(setCorrelations)
+              .catch(err => setError('Could not load correlations: ' + err.message))
+              .finally(() => setLoading(false));
+          }}
+          disabled={!presetGene && !presetClinical}
+        >
+          APPLY<br />FILTER
+        </Button>
+
       </Box>
 
       {loading ? (

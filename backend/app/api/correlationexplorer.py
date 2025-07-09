@@ -20,6 +20,7 @@ correlation_api = Blueprint('correlation_api', __name__, url_prefix='/api')
 @correlation_api.route('/top_correlations', methods=['GET'])
 def top_correlations():
     corr_type = request.args.get('type', 'gene_gene')
+    preset_feature = request.args.get('feature', None) 
     expr_df = load_expression("filtered")
     clinical_onehot = load_clinical('onehot') 
 
@@ -40,15 +41,37 @@ def top_correlations():
 
     elif corr_type == 'gene_clinical':
         clinical_num = clinical_onehot.select_dtypes(include=[np.number])
-        for gene in expr_df.columns:
-            for clin in clinical_num.columns:
-                try:
-                    corr = np.corrcoef(expr_df[gene], clinical_num[clin])[0,1]
-                except Exception:
-                    corr = None
-                if corr is not None and not np.isnan(corr):
-                    results.append({"feature_1": gene, "feature_2": clin, "correlation": corr})
-        results = sorted(results, key=lambda x: abs(x["correlation"]), reverse=True)[:20]
+        if preset_feature:  # If filtering for one gene or one clinical variable
+            results = []
+            if preset_feature in expr_df.columns:  # Preset is a gene
+                for clin in clinical_num.columns:
+                    try:
+                        corr = np.corrcoef(expr_df[preset_feature], clinical_num[clin])[0, 1]
+                    except Exception:
+                        corr = None
+                    if corr is not None and not np.isnan(corr):
+                        results.append({"feature_1": preset_feature, "feature_2": clin, "correlation": corr})
+            elif preset_feature in clinical_num.columns:  # Preset is a clinical
+                for gene in expr_df.columns:
+                    try:
+                        corr = np.corrcoef(expr_df[gene], clinical_num[preset_feature])[0, 1]
+                    except Exception:
+                        corr = None
+                    if corr is not None and not np.isnan(corr):
+                        results.append({"feature_1": gene, "feature_2": preset_feature, "correlation": corr})
+            results = sorted(results, key=lambda x: abs(x["correlation"]), reverse=True)[:20]
+        else:
+            # Default: all gene-clinical pairs
+            results = []
+            for gene in expr_df.columns:
+                for clin in clinical_num.columns:
+                    try:
+                        corr = np.corrcoef(expr_df[gene], clinical_num[clin])[0, 1]
+                    except Exception:
+                        corr = None
+                    if corr is not None and not np.isnan(corr):
+                        results.append({"feature_1": gene, "feature_2": clin, "correlation": corr})
+            results = sorted(results, key=lambda x: abs(x["correlation"]), reverse=True)[:20]
 
     elif corr_type == 'clinical_clinical':
         clinical_num = clinical_onehot.select_dtypes(include=[np.number])
@@ -156,3 +179,15 @@ def explore_correlation():
         "summary": llm_answer,
         "citations": citation_list
     })
+
+@correlation_api.route('/list_genes', methods=['GET'])
+def list_genes():
+    expr_df = load_expression("filtered")
+    return jsonify(sorted(expr_df.columns.tolist()))
+
+@correlation_api.route('/list_clinical', methods=['GET'])
+def list_clinical():
+    clinical_onehot = load_clinical('onehot')
+    # Optionally filter out predictions or non-user-facing columns
+    clinical_cols = [col for col in clinical_onehot.columns if 'prediction' not in col.lower()]
+    return jsonify(sorted(clinical_cols))
