@@ -43,9 +43,9 @@ To download, understand and preprocess the data, these steps were taken:
 - [`02_data_preprocessing_clinical.ipynb`](analysis/02_data_preprocessing_clinical.ipynb) — Clinical metadata download & cleaning
 
 **Outputs**
-- [`backend/data/GSE96058_filtered.csv`](backend/data/GSE96058_filtered.csv) - Filtered (no z-scoring / median-centering )
-- [`backend/data/GSE96058_collapsed.csv`](backend/data/GSE96058_collapsed.csv) - Collapsed (no more technical replicates)
-- [`backend/data/GSE96058_zscored_quality_checked.csv`](backend/data/GSE96058_zscored_quality_checked.csv) - Collapsed (no more technical replicates) & Z-scored
+- [`backend/data/GSE96058_filtered.csv`] - Filtered (no z-scoring / median-centering )
+- [`backend/data/GSE96058_collapsed.csv`] - Collapsed (no more technical replicates)
+- [`backend/data/GSE96058_zscored_quality_checked.csv`] - Collapsed (no more technical replicates) & Z-scored
 
 ---
 
