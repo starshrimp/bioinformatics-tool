@@ -8,6 +8,7 @@ import UMAP from './pages/UMAP';
 import LLMEDA from './pages/LLMEDA';
 import DifferentialExpression from './pages/DifferentialExpression';
 import CorrelationExplorer from './pages/CorrelationExplorer';
+import DataPrepExpr from './pages/notebooks/DataPreprocessingExpr';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
               <Route path="/correlationexplorer" element={<CorrelationExplorer />} />
               <Route path="/llmeda" element={<LLMEDA />} />
               <Route path="/umap" element={<UMAP />} />
+              <Route path="dataprepexpr" element={<DataPrepExpr />} />
             </Routes>
           </Box>
         </Paper>

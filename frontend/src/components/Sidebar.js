@@ -87,8 +87,8 @@ const Sidebar = () => {
         </ListItemButton>
         <Collapse in={openMenus.dataAnalysis} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/eda">
-              <ListItemText primary="Exploratory Data Analysis" />
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/dataprepexpr">
+              <ListItemText primary="Data Preprocessing Expression Matrix" />
             </ListItemButton>
           </List>
         </Collapse>
