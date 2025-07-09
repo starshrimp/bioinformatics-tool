@@ -43,23 +43,18 @@ const CorrelationExplorer = () => {
       .then(res => res.json())
       .then(setClinicalOptions)
       .catch(() => setClinicalOptions([]));
-    fetch(`/api/top_correlations?type=${corrType}`)
-      .then(res => res.json())
-      .then(setCorrelations)
-      .catch(err => setError('Could not load correlations: ' + err.message))
-      .finally(() => setLoading(false));
-  }, [corrType]);
 
-  useEffect(() => {
-  if (!presetGene && !presetClinical) {
-    setLoading(true);
-    fetch(`/api/top_correlations?type=${corrType}`)
-      .then(res => res.json())
-      .then(setCorrelations)
-      .catch(err => setError('Could not load correlations: ' + err.message))
-      .finally(() => setLoading(false));
-  }
-}, [presetGene, presetClinical, corrType]);
+    // Fetch correlations based on conditions
+    if (!presetGene && !presetClinical) {
+      fetch(`/api/top_correlations?type=${corrType}`)
+        .then(res => res.json())
+        .then(setCorrelations)
+        .catch(err => setError('Could not load correlations: ' + err.message))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false); // No fetch needed if presetGene or presetClinical is set
+    }
+  }, [corrType, presetGene, presetClinical]);
 
   // Explore correlation (calls LLM or summary API)
   const handleExplore = async (feature_1, feature_2) => {
