@@ -54,34 +54,41 @@ def top_correlations():
             results = []
             if preset_feature in expr_df.columns:  # Preset is a gene
                 for clin in clinical_num.columns:
-                    try:
-                        corr = np.corrcoef(expr_df[preset_feature], clinical_num[clin])[0, 1]
-                    except Exception:
-                        corr = None
-                    if corr is not None and not np.isnan(corr):
-                        results.append({"feature_1": preset_feature, "feature_2": clin, "correlation": corr})
+                    # Drop missing values for both gene and clinical variable
+                    valid = ~(expr_df[preset_feature].isnull() | clinical_num[clin].isnull())
+                    if valid.sum() > 2:  # Need at least 3 samples
+                        try:
+                            corr = np.corrcoef(expr_df[preset_feature][valid], clinical_num[clin][valid])[0, 1]
+                        except Exception:
+                            corr = None
+                        if corr is not None and not np.isnan(corr):
+                            results.append({"feature_1": preset_feature, "feature_2": clin, "correlation": corr})
             elif preset_feature in clinical_num.columns:  # Preset is a clinical
                 for gene in expr_df.columns:
-                    try:
-                        corr = np.corrcoef(expr_df[gene], clinical_num[preset_feature])[0, 1]
-                    except Exception:
-                        corr = None
-                    if corr is not None and not np.isnan(corr):
-                        results.append({"feature_1": gene, "feature_2": preset_feature, "correlation": corr})
+                    valid = ~(expr_df[gene].isnull() | clinical_num[preset_feature].isnull())
+                    if valid.sum() > 2:
+                        try:
+                            corr = np.corrcoef(expr_df[gene][valid], clinical_num[preset_feature][valid])[0, 1]
+                        except Exception:
+                            corr = None
+                        if corr is not None and not np.isnan(corr):
+                            results.append({"feature_1": gene, "feature_2": preset_feature, "correlation": corr})
             results = sorted(results, key=lambda x: abs(x["correlation"]), reverse=True)[:20]
         else:
             # Default: all gene-clinical pairs
             results = []
             for gene in expr_df.columns:
                 for clin in clinical_num.columns:
-                    try:
-                        corr = np.corrcoef(expr_df[gene], clinical_num[clin])[0, 1]
-                    except Exception:
-                        corr = None
-                    if corr is not None and not np.isnan(corr):
-                        results.append({"feature_1": gene, "feature_2": clin, "correlation": corr})
+                    valid = ~(expr_df[gene].isnull() | clinical_num[clin].isnull())
+                    if valid.sum() > 2:
+                        try:
+                            corr = np.corrcoef(expr_df[gene][valid], clinical_num[clin][valid])[0, 1]
+                        except Exception:
+                            corr = None
+                        if corr is not None and not np.isnan(corr):
+                            results.append({"feature_1": gene, "feature_2": clin, "correlation": corr})
             results = sorted(results, key=lambda x: abs(x["correlation"]), reverse=True)[:20]
-
+        
     elif corr_type == 'clinical_clinical':
         clinical_num = clinical_onehot.select_dtypes(include=[np.number])
         cols = clinical_num.columns
