@@ -38,7 +38,6 @@ def truncate_table_markdown(text, max_rows=30):
     return text
 
 
-# Optional: Load your DataFrame here or in main.py and pass it
 clinical_df = pd.read_csv(get_full_path(os.getenv("CLINICAL_LLM")))  # Adjust path
 
 
@@ -68,58 +67,80 @@ def llm_eda():
     # 1. Call planner agent
     plan = call_planner_llm(query, columns_str)
     steps = plan['steps'] if isinstance(plan, dict) and 'steps' in plan else plan
-    # If steps are dicts: extract the string
     if steps and isinstance(steps[0], dict) and 'step' in steps[0]:
         steps = [s['step'] for s in steps]
 
-    # 2. Call coder agent
-    code = call_coder_llm(steps, columns_str)
-    code = strip_code_fences(code)
+    # Retry loop for code generation and execution
+    max_attempts = 3
+    attempt = 0
+    error_message = None
+    code = None
 
-    # 3. Execute code
-    buf = io.BytesIO()
-    local_env = {
-        'clinical_df': clinical_df,
-        'plt': plt,
-        'pd': pd,
-        'lifelines': lifelines,   # <-- Make lifelines available in exec
-        'sns': sns,
-        'np': np
-    }
-    try:
-        logger.info("----RAW LLM CODE OUTPUT----\n%s\n------------------------------", code)
-        exec(code, {}, local_env)
-        plot_base64 = None
-        if plt.get_fignums():
-            plt.savefig(buf, format='png')
-            plt.close()
-            buf.seek(0)
-            plot_base64 = "data:image/png;base64," + base64.b64encode(buf.read()).decode('utf-8')
+    while attempt < max_attempts:
+        if attempt == 0:
+            # First attempt: send original prompt to coder llm
+            code = call_coder_llm(steps, columns_str)
+        else:
+            # On retry, send the original prompt, failed code, and error message
+            retry_prompt = (
+                f"The following code failed to execute for the prompt: '{query}'.\n"
+                f"Error message:\n{error_message}\n"
+                f"Please fix the code below:\n{code}"
+            )
+            code = call_coder_llm([retry_prompt], columns_str)
+            logger.info("----------------------------------------------------------Retry prompt:----\n%s\n-----------------------------", retry_prompt)
+        code = strip_code_fences(code)
 
-        text_result = local_env.get('output', '')
-        if "| KM_estimate" in text_result: 
-            text_result = truncate_table_markdown(text_result)
+        buf = io.BytesIO()
+        local_env = {
+            'clinical_df': clinical_df,
+            'plt': plt,
+            'pd': pd,
+            'lifelines': lifelines,
+            'sns': sns,
+            'np': np
+        }
+        try:
+            logger.info("----RAW LLM CODE OUTPUT----\n%s\n------------------------------", code)
 
-        evaluation = call_evaluator_llm(query, steps, text_result)
-        plot_explanation = None
-        if plot_base64:  # Only call if plot exists!
-            plot_explanation = call_plot_explanation_llm(query, text_result, steps)
+            # Execute the code in a local environment
+            exec(code, {}, local_env)
+            plot_base64 = None
+            if plt.get_fignums():
+                plt.savefig(buf, format='png')
+                plt.close()
+                buf.seek(0)
+                plot_base64 = "data:image/png;base64," + base64.b64encode(buf.read()).decode('utf-8')
 
-        return jsonify({
-            'plot': plot_base64,
-            'text': text_result,
-            'code': code,
-            'steps': steps,
-            'evaluation': evaluation,
-            'plot_explanation': plot_explanation
-        })
-    except Exception as e:
-        tb = traceback.format_exc()
-        logger.error("Execution failed: %s\nCode:\n%s", tb, code)
-        return jsonify({
-            'error': f"Sorry, the analysis could not be completed due to a technical issue: {str(e)}",
-            'trace': tb,         # Optionally, remove in production
-            'code': code,        # Optionally, remove in production
-            'retry': True        # <--- Add this flag!
-        }), 200
+            text_result = local_env.get('output', '')
+            if "| KM_estimate" in text_result:
+                text_result = truncate_table_markdown(text_result)
 
+            # last step: call evaluator llm
+            evaluation = call_evaluator_llm(query, steps, text_result)
+            plot_explanation = None
+            if plot_base64:
+                plot_explanation = call_plot_explanation_llm(query, text_result, steps)
+
+            return jsonify({
+                'plot': plot_base64,
+                'text': text_result,
+                'code': code,
+                'steps': steps,
+                'evaluation': evaluation,
+                'plot_explanation': plot_explanation
+            })
+        except Exception as e:
+            # logs the error and traceback
+            tb = traceback.format_exc()
+            logger.error("Execution failed (attempt %d): %s\nCode:\n%s", attempt+1, tb, code)
+            error_message = f"{str(e)}\n{tb}"
+            attempt += 1
+
+    # If all attempts fail, return error to frontend
+    return jsonify({
+        'error': f"Sorry, the analysis could not be completed after {max_attempts} attempts.",
+        'trace': error_message,
+        'code': code,
+        'retry': False
+    }), 200
