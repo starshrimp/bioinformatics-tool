@@ -93,6 +93,9 @@ const Sidebar = () => {
             <ListItemButton sx={{ pl: 4 }} component={Link} to="/dataprepclin">
               <ListItemText primary="Data Preprocessing Clinical Metadata" />
             </ListItemButton>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/dataanalysis">
+              <ListItemText primary="Data Analysis" />
+            </ListItemButton>
           </List>
         </Collapse>
       </List>
