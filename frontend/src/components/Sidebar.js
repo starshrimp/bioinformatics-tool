@@ -99,6 +99,9 @@ const Sidebar = () => {
             <ListItemButton sx={{ pl: 4 }} component={Link} to="/pca">
               <ListItemText primary="Principal Components Analysis" />
             </ListItemButton>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/umappam50">
+              <ListItemText primary="UMAP for PAM50 Subtypes" />
+            </ListItemButton>
           </List>
         </Collapse>
       </List>

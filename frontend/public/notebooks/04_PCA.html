@@ -7511,6 +7511,31 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ad02ac56">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="Overview">Overview<a class="anchor-link" href="#Overview">¶</a></h1><p>This notebook explores dimensionality reduction and visualization of gene expression data using PCA (Principal Component Analysis). The main steps and analyses performed are:</p>
+<ol>
+<li><p><strong>Data Loading</strong>: Clinical metadata, collapsed (not z-scored) gene expression data, and z-scored gene expression data are loaded and aligned by sample.</p>
+</li>
+<li><p><strong>PCA on Z-Scored Data</strong>: PCA is performed on the full z-scored dataset. The first two principal components are visualized, colored by biological subtype. Variance explained and silhouette scores are calculated to assess separation.</p>
+</li>
+<li><p><strong>Statistical Testing</strong>: ANOVA is used to test for significant differences in PC1 between subtypes.</p>
+</li>
+<li><p><strong>Feature Selection</strong>: PCA is repeated using only the top 8000 most variable genes to see if focusing on variable genes improves separation.</p>
+</li>
+<li><p><strong>Outlier Removal</strong>: Outliers are identified and removed based on PCA distance from the center, and PCA is re-run to assess impact.</p>
+</li>
+<li><p><strong>PCA on Collapsed Data</strong>: The same PCA workflow is applied to the collapsed (not z-scored) dataset for comparison.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=16d5b71f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7537,7 +7562,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
