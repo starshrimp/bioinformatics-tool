@@ -1,11 +1,11 @@
 // src/pages/Eda.js
 import React from "react";
 
-const DataPrepExpr = () => (
+const DataPrepClin = () => (
   <div style={{ height: "100vh" }}>
-    <h1>Data Preprocessing Expression Matrix</h1>
+    <h1>Data Preprocessing Clinical Metadata</h1>
     <iframe
-      src="/notebooks/01_data_preprocessing_expr.html"
+      src="/notebooks/02_data_preprocessing_clinical.html"
       title="Data Analysis Notebook"
       style={{
         width: "100%",
@@ -18,4 +18,4 @@ const DataPrepExpr = () => (
   
 );
 
-export default DataPrepExpr;
+export default DataPrepClin;

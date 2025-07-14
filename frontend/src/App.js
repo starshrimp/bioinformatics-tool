@@ -9,6 +9,7 @@ import LLMEDA from './pages/LLMEDA';
 import DifferentialExpression from './pages/DifferentialExpression';
 import CorrelationExplorer from './pages/CorrelationExplorer';
 import DataPrepExpr from './pages/notebooks/DataPreprocessingExpr';
+import DataPrepClin from './pages/notebooks/DataPreprocessingClin';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
               <Route path="/llmeda" element={<LLMEDA />} />
               <Route path="/umap" element={<UMAP />} />
               <Route path="dataprepexpr" element={<DataPrepExpr />} />
+              <Route path="dataprepclin" element={<DataPrepClin />} />
             </Routes>
           </Box>
         </Paper>
