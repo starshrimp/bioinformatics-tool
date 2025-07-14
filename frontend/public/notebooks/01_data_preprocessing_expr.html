@@ -7511,6 +7511,28 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7b5b3f85">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="Overview">Overview<a class="anchor-link" href="#Overview">¶</a></h1><p>This notebook provides a comprehensive workflow for preprocessing and quality control of gene expression data. The steps include:</p>
+<ul>
+<li>Loading raw gene expression and clinical metadata</li>
+<li>Visualizing and exploring the distribution of expression values</li>
+<li>Removing genes with constant or low expression across samples</li>
+<li>Flagging and analyzing outlier samples based on total expression and number of unexpressed genes</li>
+<li>Handling technical replicates by collapsing or removing them based on correlation</li>
+<li>Exporting filtered and quality-checked datasets</li>
+<li>Applying z-score normalization to the expression data</li>
+<li>Exporting the z-scored dataset</li>
+</ul>
+<p>The goal is to prepare a clean, normalized dataset suitable for downstream machine learning and statistical analysis.</p>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ea924635">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7550,7 +7572,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Data-Loading">Data Loading<a class="anchor-link" href="#Data-Loading">¶</a></h1><p>Data was downloaded from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96058">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96058</a>, unzipped and stored in the data folder. 
+<h1 id="Data-Loading">Data Loading<a class="anchor-link" href="#Data-Loading">¶</a></h1><p>Data was downloaded from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96058">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96058</a>, unzipped and stored in the data folder.
 The raw dataset is named "em" and its path can be found in the analysis .env file.</p>
 </div>
 </div>
@@ -7856,7 +7878,7 @@ F5                               0                          1
 <li>there are negative values</li>
 </ul>
 <p>Spike around -3: wondering where this value came from, could be a placeholder for no expression.</p>
-<p>Edit: 
+<p>Edit:
 The paper on the preprocessing of the dataset (<a href="https://pubmed.ncbi.nlm.nih.gov/32913985/">https://pubmed.ncbi.nlm.nih.gov/32913985/</a>) mentions:
 "Gene expression data were pre-processed by collapsing on 27,979 unique gene symbols (sum of FPKM values of each matching transcript), adding to each gene’s expression measurement 0.1 FPKM, performing a log2 transformation, and centering the gene expression values by subtracting the row-wise (gene) median (calculated across the 49 primary data sets) from the values in each row of data."</p>
 <p>-&gt; That would mean all rows with -3.219 have no expression. (because it is log(0+0.1)).</p>
