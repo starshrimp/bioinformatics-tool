@@ -7511,6 +7511,33 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3bb20b56">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="Overview">Overview<a class="anchor-link" href="#Overview">¶</a></h1><p>This notebook contains the preprocessing pipeline for the clinical metadata from the GSE96058 GEO dataset. The main steps include:</p>
+<ol>
+<li><strong>Data Download &amp; Extraction</strong>: The dataset is downloaded and relevant metadata is extracted.</li>
+<li><strong>Cleaning</strong>: Constant columns are dropped, and missing values (represented as "NA") are standardized to <code>np.nan</code>.</li>
+<li><strong>Feature Exploration</strong>: Columns are inspected to understand their types and contents.</li>
+<li><strong>Preprocessing</strong>:<ul>
+<li>Numeric features are converted to numeric types.</li>
+<li>Binary features are mapped to 0/1.</li>
+<li>Ordinal categorical features are label encoded to preserve order.</li>
+<li>Nominal categorical features are one-hot encoded.</li>
+</ul>
+</li>
+<li><strong>Column Management</strong>: Unnecessary columns and duplicates are dropped, and columns are renamed for consistency.</li>
+<li><strong>Export</strong>: Cleaned and one-hot encoded datasets are exported for downstream analysis.</li>
+<li><strong>Imputation</strong>: Missing values in selected columns are imputed using KNN, and the imputed dataset is exported.</li>
+</ol>
+<p>This workflow ensures the clinical data is ready for exploratory data analysis (EDA) and machine learning applications.</p>
+</div>
+</div>
+</div>
+</div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6faab212">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -8393,7 +8420,7 @@ Lymph Node Group: ['NodeNegative' '1to3' '4toX' 'SubMicroMet' nan]
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>10 out of 26 columns have missing values, most are binary columns.</p>
-<p>ki67 status is missing for 53%! 
+<p>ki67 status is missing for 53%!
 Could argue for dropping this column, but Davey et al. 2021 found that "The expression of Ki-67 is strongly linked to tumour cell proliferation and growth and is routinely evaluated as a proliferation marker." -&gt; keep</p>
 </div>
 </div>
