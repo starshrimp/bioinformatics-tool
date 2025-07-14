@@ -13,6 +13,7 @@ import DataPrepClin from './pages/notebooks/DataPreprocessingClin';
 import DataAnalysis from './pages/notebooks/DataAnalysis';
 import PrincipalComponent from './pages/notebooks/PrincipalComponent';
 import UMAPPAM50 from './pages/notebooks/UMAPpam50';
+import UMAPBiomarkers from './pages/notebooks/UMAPBiomarkers';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
               <Route path="dataanalysis" element={<DataAnalysis />} />
               <Route path="pca" element={<PrincipalComponent />} />
               <Route path="umappam50" element={<UMAPPAM50 />} />
+              <Route path="umapbiomarkers" element={<UMAPBiomarkers />} />
             </Routes>
           </Box>
         </Paper>
