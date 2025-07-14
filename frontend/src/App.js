@@ -14,6 +14,8 @@ import DataAnalysis from './pages/notebooks/DataAnalysis';
 import PrincipalComponent from './pages/notebooks/PrincipalComponent';
 import UMAPPAM50 from './pages/notebooks/UMAPpam50';
 import UMAPBiomarkers from './pages/notebooks/UMAPBiomarkers';
+import Biomarkers from './pages/notebooks/Biomarkers';
+import Subtypes from './pages/notebooks/Subtypes';
 
 function App() {
   return (
@@ -52,6 +54,8 @@ function App() {
               <Route path="pca" element={<PrincipalComponent />} />
               <Route path="umappam50" element={<UMAPPAM50 />} />
               <Route path="umapbiomarkers" element={<UMAPBiomarkers />} />
+              <Route path="biomarkers" element={<Biomarkers />} />
+              <Route path="subtypes" element={<Subtypes />} />
             </Routes>
           </Box>
         </Paper>
