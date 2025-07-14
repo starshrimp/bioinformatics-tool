@@ -115,36 +115,49 @@ Used UMAP (Uniform Manifold Approximation and Projection) to visualize high-dime
 
 ---
 
-## [N]. [Next Section Title]
+## 5. Subtype Prediction
 
 **Overview & Reasoning**  
-Brief explanation of the aims, logic, and choices.
+Developed machine learning models to predict breast cancer subtypes from gene expression and clinical data. The goal was to assess predictive accuracy and identify key features driving subtype classification.
 
 **Key Steps & Insights**
-- Main actions/decisions
-- Major findings or issues noted here
+- Prepared training and test sets using filtered gene expression and clinical features.
+- Evaluated multiple algorithms (e.g., Random Forest, Logistic Regression, SVM) for subtype prediction.
+- Performed hyperparameter tuning and cross-validation to optimize model performance.
+- Assessed model accuracy, precision, recall, and confusion matrices.
+- Identified top predictive genes and clinical variables for each subtype.
 
 **Notebooks & Scripts**
-- `[notebook/script name and link]`
+- [`06_subtypes.ipynb`](analysis/06_subtypes.ipynb) — Subtype prediction modeling and evaluation
 
 **Outputs**
-- `[relevant files, e.g., figures, processed data, etc.]`
+- Model performance metrics (accuracy, precision, recall, F1-score)
+- Feature importance rankings
+- Confusion matrices and prediction plots
+- Saved trained models and prediction results
 
 ---
 
-## [N]. [Next Section Title]
+## 6. Biomarker Prediction
 
 **Overview & Reasoning**  
-Brief explanation of the aims, logic, and choices.
+Developed models to predict key biomarker status (e.g., ER, PR, HER2) from gene expression and clinical data. The aim was to evaluate predictive accuracy and identify features most associated with biomarker expression.
 
 **Key Steps & Insights**
-- Main actions/decisions
-- Major findings or issues noted here
+- Selected relevant biomarker targets for prediction.
+- Prepared datasets with filtered gene expression and clinical features.
+- Trained and evaluated multiple algorithms (Random Forest, Logistic Regression, SVM) for each biomarker.
+- Performed cross-validation and hyperparameter tuning.
+- Assessed model performance using accuracy, precision, recall, and ROC curves.
+- Identified top predictive genes and clinical features for each biomarker.
 
 **Notebooks & Scripts**
-- `[notebook/script name and link]`
+- [`07_biomarkers.ipynb`](analysis/07_biomarkers.ipynb) — Biomarker prediction modeling and evaluation
 
 **Outputs**
-- `[relevant files, e.g., figures, processed data, etc.]`
+- Model performance metrics (accuracy, precision, recall, ROC curves)
+- Feature importance rankings for each biomarker
+- Confusion matrices and prediction plots
+- Saved trained models and prediction results
 
 ---
