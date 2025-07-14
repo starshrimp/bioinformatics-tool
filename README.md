@@ -49,7 +49,7 @@ To download, understand and preprocess the data, these steps were taken:
 
 ---
 
-## [2]. Clinical Metadata Analysis
+## 2. Clinical Metadata Analysis
 
 **Overview & Reasoning**  
 Characterize and compare clinical variables & uncover clinical patterns.
