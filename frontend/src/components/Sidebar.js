@@ -96,6 +96,9 @@ const Sidebar = () => {
             <ListItemButton sx={{ pl: 4 }} component={Link} to="/dataanalysis">
               <ListItemText primary="Data Analysis" />
             </ListItemButton>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/pca">
+              <ListItemText primary="Principal Components Analysis" />
+            </ListItemButton>
           </List>
         </Collapse>
       </List>
