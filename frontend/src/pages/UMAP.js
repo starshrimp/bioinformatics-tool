@@ -170,7 +170,7 @@ const UMAPPage = () => {
               xaxis: { title: 'UMAP1', showgrid: true, zeroline: false },
               yaxis: { title: 'UMAP2', showgrid: true, zeroline: false },
               legend: {
-                title: { text: 'PAM50 Subtype' },
+                title: { text: '   Variable' },
                 font: { size: 11 },
                 itemsizing: "constant",
                 bordercolor: "#ccc",
@@ -179,6 +179,7 @@ const UMAPPage = () => {
                 x: 1.05,
                 y: 0.5,
                 yanchor: "middle",
+                xanchor: "center",
                 itemwidth: 50,  
               },
               margin: { t: 40, r: 170, b: 40, l: 40 },
