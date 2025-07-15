@@ -62,18 +62,6 @@ def api_umap():
     clinical_imputed = pd.concat([clinical_numeric, clinical_onehot], axis=1)
     clinical_scaled = StandardScaler().fit_transform(clinical_imputed)
 
-    # PCA on gene expression
-    pca = PCA(n_components=min(100, expr_df.shape[1]), random_state=42)
-    X_pca = pca.fit_transform(expr_df)
-
-    # Combine as needed
-    if include_clinical:
-        X = np.hstack([X_pca, clinical_scaled])
-    else:
-        X = X_pca
-
-    reducer = umap.UMAP(random_state=42)
-    X_umap = reducer.fit_transform(X)
 
     # --- Hue extraction ---
     if hue in clinical_df.columns:
@@ -101,6 +89,19 @@ def api_umap():
     
     unique_hues = sorted(list(set(hue_values)))
     sample_ids = expr_df.index.tolist()
+
+    # PCA on gene expression
+    pca = PCA(n_components=min(100, expr_df.shape[1]), random_state=42)
+    X_pca = pca.fit_transform(expr_df)
+
+    # Combine as needed
+    if include_clinical:
+        X = np.hstack([X_pca, clinical_scaled])
+    else:
+        X = X_pca
+
+    reducer = umap.UMAP(random_state=42)
+    X_umap = reducer.fit_transform(X)
 
     return jsonify({
         "umap_coords": X_umap.tolist(),

@@ -102,6 +102,10 @@ const UMAPPage = () => {
             <MenuItem value="filtered">Filtered Expression Matrix</MenuItem>
             <MenuItem value="median_centered">Median-Centered Expression Matrix</MenuItem>
             <MenuItem value="zscored">Median-Centered Z-Scored Expression Matrix</MenuItem>
+            <MenuItem value="zscored_top8000">Z-Scored Top 8000 Genes</MenuItem>
+            <MenuItem value="median_centered_top8000">Median-Centered Top 8000 Genes</MenuItem>
+            <MenuItem value="COLLAPSED_top8000">Collapsed Top 8000 Genes</MenuItem>
+
           </Select>
         </FormControl>
         <FormControlLabel

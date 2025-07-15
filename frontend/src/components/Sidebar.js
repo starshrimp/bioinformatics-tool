@@ -41,7 +41,6 @@ const Sidebar = () => {
         <ListItemButton component={Link} to="/correlationexplorer">
           <ListItemText primary="Correlation Explorer 🔗" />
         </ListItemButton>
-        
         <ListItemButton component={Link} to="/differentialexpression">
           <ListItemText primary="Differential Expression Analysis 🧬" />
         </ListItemButton>
