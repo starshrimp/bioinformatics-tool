@@ -14,7 +14,11 @@ COPY requirements.txt .
 # This will copy only:
 # - data/parquet/*.parquet files  
 # - data/GSE96058_clinical_metadata_cleaned.csv
-COPY data/parquet/ ./data/parquet/
+COPY data/parquet/median_centered_top8000.parquet ./data/parquet/
+COPY data/parquet/COLLAPSED_top8000.parquet ./data/parquet/
+COPY data/parquet/zscored_top8000.parquet ./data/parquet/
+COPY data/parquetfiltered_top5000.parquet ./data/parquet/
+
 COPY data/GSE96058_clinical_metadata_cleaned.csv ./data/
 COPY data/GSE96058_clinical_LLM.csv ./data/
 COPY data/GSE96058_clinical_onehot.csv ./data/
