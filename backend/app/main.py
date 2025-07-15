@@ -19,7 +19,7 @@ CORS(app, resources={r"/api/*": {"origins": [
 
 @app.route("/")
 def hello():
-    return "👋 Hello from the Raspberry Pi - Backend 6th of July 17.00!"
+    return "👋 Hello from the Raspberry Pi - Backend 15th of July in the Afternoon!"
 
 app.register_blueprint(umap_api)
 app.register_blueprint(llm_eda_api)
