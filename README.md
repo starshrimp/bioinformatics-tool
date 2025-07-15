@@ -1,12 +1,30 @@
-# bioinformatics-tool
+# Breast Cancer Transcriptomics Analysis Platform
+
+## Deployment & Website
+
+The bioinformatics-tool is deployed as a web application accessible at [bioai.sarahrebeccameyer.com](https://bioai.sarahrebeccameyer.com).  
+The frontend is built with React and Material UI, providing an interactive and user-friendly interface for data exploration and analysis.
+
+The backend runs in a Docker container on a private Raspberry Pi, ensuring lightweight and efficient server-side processing.  
+All processed data is stored in Parquet format for fast access and efficient storage.
+
+**Tech Stack:**
+- **Frontend:** React, Material UI
+- **Backend:** Python (Flask API), Docker, Raspberry Pi
+- **Data Storage:** Parquet files
+
 
 # Analysis
+
+**Note**: Jupyter notebooks (.ipynb) with numbers at the beginning of their filenames are the cleaned up and final versions. These are located in the 'analysis' folder. Notebooks found in the 'data prep', 'eda', 'supervised ml', and 'unsupervised ml' folders were used during the development process and are included for completeness; however, they may not be cleaned up or finalized.
+
+
 ## 1. Data Download & Preprocessing
 
 **Overview & Reasoning**  
 
 
-### Key Steps & Insights**
+### Key Steps & Insights
 To download, understand and preprocess the data, these steps were taken:
 - Downloaded [gene expression](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96058) and clinical metadata as SOFT (Simple Omnibus Format in Text) using the GEOparse package.
 - Read [original study of the dataset](https://pubmed.ncbi.nlm.nih.gov/32913985/) and the [paper on the preprocessing](https://pubmed.ncbi.nlm.nih.gov/32913985/)

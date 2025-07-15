@@ -39,7 +39,7 @@ def top_correlations():
 
     if corr_type == 'gene_gene':
         # High variance genes only for speed
-        top_genes = expr_df.var().sort_values(ascending=False).head(100).index
+        top_genes = expr_df.var().sort_values(ascending=False).head(1000).index
         corr_matrix = expr_df[top_genes].corr()
         for i, gene1 in enumerate(top_genes):
             for gene2 in top_genes[i+1:]:
@@ -50,6 +50,7 @@ def top_correlations():
 
     elif corr_type == 'gene_clinical':
         clinical_num = clinical_onehot.select_dtypes(include=[np.number])
+        top_genes = expr_df.var().sort_values(ascending=False).head(1000).index
         if preset_feature:  # If filtering for one gene or one clinical variable
             results = []
             if preset_feature in expr_df.columns:  # Preset is a gene
@@ -64,7 +65,7 @@ def top_correlations():
                         if corr is not None and not np.isnan(corr):
                             results.append({"feature_1": preset_feature, "feature_2": clin, "correlation": corr})
             elif preset_feature in clinical_num.columns:  # Preset is a clinical
-                for gene in expr_df.columns:
+                for gene in top_genes:
                     valid = ~(expr_df[gene].isnull() | clinical_num[preset_feature].isnull())
                     if valid.sum() > 2:
                         try:
@@ -75,9 +76,8 @@ def top_correlations():
                             results.append({"feature_1": gene, "feature_2": preset_feature, "correlation": corr})
             results = sorted(results, key=lambda x: abs(x["correlation"]), reverse=True)[:20]
         else:
-            # Default: all gene-clinical pairs
             results = []
-            for gene in expr_df.columns:
+            for gene in top_genes:
                 for clin in clinical_num.columns:
                     valid = ~(expr_df[gene].isnull() | clinical_num[clin].isnull())
                     if valid.sum() > 2:
