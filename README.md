@@ -24,7 +24,7 @@ All processed data is stored in Parquet format for fast access and efficient sto
 **Overview & Reasoning**  
 
 
-### Key Steps & Insights**
+### Key Steps & Insights
 To download, understand and preprocess the data, these steps were taken:
 - Downloaded [gene expression](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE96058) and clinical metadata as SOFT (Simple Omnibus Format in Text) using the GEOparse package.
 - Read [original study of the dataset](https://pubmed.ncbi.nlm.nih.gov/32913985/) and the [paper on the preprocessing](https://pubmed.ncbi.nlm.nih.gov/32913985/)
