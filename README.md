@@ -15,9 +15,9 @@ All processed data is stored in Parquet format for fast access and efficient sto
 
 
 # Analysis
-"""
-Note: Jupyter notebooks (.ipynb) with numbers at the beginning of their filenames are the cleaned up and final versions. These are located in the 'analysis' folder. Notebooks found in the 'data prep', 'eda', 'supervised ml', and 'unsupervised ml' folders were used during the development process and are included for completeness; however, they may not be cleaned up or finalized.
-"""
+
+**Note**: Jupyter notebooks (.ipynb) with numbers at the beginning of their filenames are the cleaned up and final versions. These are located in the 'analysis' folder. Notebooks found in the 'data prep', 'eda', 'supervised ml', and 'unsupervised ml' folders were used during the development process and are included for completeness; however, they may not be cleaned up or finalized.
+
 
 ## 1. Data Download & Preprocessing
 
