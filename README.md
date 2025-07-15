@@ -1,8 +1,8 @@
-# Breast Cancer Multi-Omics Analysis Platform
+# Breast Cancer Transcriptomics Analysis Platform
 
 ## Deployment & Website
 
-The bioinformatics-tool is deployed as a web application accessible at [YOUR_WEBSITE_URL_HERE].  
+The bioinformatics-tool is deployed as a web application accessible at [bioai.sarahrebeccameyer.com](bioai.sarahrebeccameyer.com).  
 The frontend is built with React and Material UI, providing an interactive and user-friendly interface for data exploration and analysis.
 
 The backend runs in a Docker container on a private Raspberry Pi, ensuring lightweight and efficient server-side processing.  
