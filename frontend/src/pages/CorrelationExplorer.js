@@ -16,45 +16,47 @@ const CorrelationExplorer = () => {
   const [corrType, setCorrType] = useState(CORR_TYPES[1].value);
   const [correlations, setCorrelations] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [exploreLoading, setExploreLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [exploreResult, setExploreResult] = useState(null);
-  const [exploreOpen, setExploreOpen] = useState(false);
-  const [exploreFeatures, setExploreFeatures] = useState({ feature_1: '', feature_2: '' });
-  const [citations, setCitations] = useState([]);
-  
   const [presetGene, setPresetGene] = useState('');
   const [presetClinical, setPresetClinical] = useState('');
   const [geneOptions, setGeneOptions] = useState([]);
   const [clinicalOptions, setClinicalOptions] = useState([]);
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "";
+  const [exploreLoading, setExploreLoading] = useState(false);
+
+  const [exploreResult, setExploreResult] = useState(null);
+  const [exploreOpen, setExploreOpen] = useState(false);
+  const [exploreFeatures, setExploreFeatures] = useState({ feature_1: '', feature_2: '' });
+  const [citations, setCitations] = useState([]);
 
   // Fetch correlations on mount or when corrType changes
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    setCorrelations([]);
     fetch(`${BACKEND_URL}/api/list-genes`)
       .then(res => res.json())
       .then(setGeneOptions)
-      .catch(() => setGeneOptions([])); // fallback if error
+      .catch(() => setGeneOptions([]));
 
     fetch(`${BACKEND_URL}/api/list-clinical`)
       .then(res => res.json())
       .then(setClinicalOptions)
       .catch(() => setClinicalOptions([]));
+  }, [BACKEND_URL]);
 
-    // Fetch correlations based on conditions
-    if (!presetGene && !presetClinical) {
-      fetch(`${BACKEND_URL}/api/top-correlations?type=${corrType}`)
-        .then(res => res.json())
-        .then(setCorrelations)
-        .catch(err => setError('Could not load correlations: ' + err.message))
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false); // No fetch needed if presetGene or presetClinical is set
+  const handleApplyFilter = () => {
+    setLoading(true);
+    setError(null);
+    setCorrelations([]);
+    let url = `${BACKEND_URL}/api/top-correlations?type=${corrType}`;
+    const filterValue = presetGene || presetClinical;
+    if (filterValue) {
+      url += `&feature=${encodeURIComponent(filterValue)}`;
     }
-  }, [corrType, presetGene, presetClinical, BACKEND_URL]);
+    fetch(url)
+      .then(res => res.json())
+      .then(setCorrelations)
+      .catch(err => setError('Could not load correlations: ' + err.message))
+      .finally(() => setLoading(false));
+  };
 
   // Explore correlation (calls LLM or summary API)
   const handleExplore = async (feature_1, feature_2) => {
@@ -100,6 +102,8 @@ const CorrelationExplorer = () => {
             value={corrType}
             onChange={e => {
               setCorrType(e.target.value);
+              setPresetGene('');
+              setPresetClinical('');
             }}
             label="Correlation Type"
           >
@@ -107,6 +111,7 @@ const CorrelationExplorer = () => {
               <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
             ))}
           </Select>
+
         </FormControl>
         {corrType === 'gene_clinical' && (
           <>
@@ -137,18 +142,10 @@ const CorrelationExplorer = () => {
         )}
         <Button
           variant="outlined"
-          onClick={() => {
-            setLoading(true);
-            const filterValue = presetGene || presetClinical;
-            fetch(`${BACKEND_URL}/api/top-correlations?type=${corrType}&feature=${encodeURIComponent(filterValue)}`)
-              .then(res => res.json())
-              .then(setCorrelations)
-              .catch(err => setError('Could not load correlations: ' + err.message))
-              .finally(() => setLoading(false));
-          }}
-          disabled={!presetGene && !presetClinical}
+          onClick={handleApplyFilter}
+
         >
-          APPLY<br />FILTER
+          EXPLORE<br />CORRELATIONS
         </Button>
 
       </Box>

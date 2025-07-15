@@ -10,7 +10,19 @@ const Landing = () => (
       <Typography variant="body1" gutterBottom>
         This interactive tool provides exploratory and AI-assisted insights based on the GSE96058 breast cancer RNA-seq dataset from the SCAN-B initiative.
       </Typography>
-
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          About This Tool
+        </Typography>
+        <Typography variant="body2" component="p">
+          This tool was developed by Sarah Rebecca Meyer and enables the exploration of this dataset using interactive visualizations, unsupervised learning, and supervised models. The goal is to demonstrate the power of AI-driven approaches in uncovering clinically relevant patterns in cancer transcriptomics.
+          <br />
+          The tool is open-source and available on <Link href="https://github.com/starshrimp/bioinformatics-tool" target="_blank" rel="noopener">
+            GitHub
+          </Link>
+          . The frontend is built with React and Material-UI and hosted through GitHub Pages, while the backend uses a Flask API to handle data processing and model inference and is deployed on my personal Raspberry Pi through the use of a Docker container.
+        </Typography>
+      </Box>
       <Box sx={{ mt: 4 }}>
         <Typography variant="h5" gutterBottom>
           Explore the Tool
@@ -50,6 +62,17 @@ const Landing = () => (
         </Box>
         <Box sx={{ mt: 2 }}>
           <Typography variant="subtitle1" gutterBottom>
+            <strong>Interactive UMAP Explorer</strong>
+          </Typography>
+          <Typography variant="body2" component="p">
+            Visualize the high-dimensional gene expression and clinical data in two dimensions using UMAP.<br />
+            Select different expression matrices and clinical variables to color the plot, and optionally include clinical features in the embedding.<br />
+            This tool helps reveal clusters, subtypes, and relationships in the data interactively.<br />
+            <Link href="/#/umap" color="primary">Find it here</Link>
+          </Typography>
+        </Box>
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="subtitle1" gutterBottom>
             <strong>Jupyter Notebooks</strong>
           </Typography>
           <Typography variant="body2" component="p">
@@ -85,14 +108,7 @@ const Landing = () => (
         </Typography>
       </Box>
 
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          About This Tool
-        </Typography>
-        <Typography variant="body2" component="p">
-          This tool was developed by Sarah Rebecca Meyer and enables the exploration of this dataset using interactive visualizations, unsupervised learning, and supervised models. The goal is to demonstrate the power of AI-driven approaches in uncovering clinically relevant patterns in cancer transcriptomics.
-        </Typography>
-      </Box>
+
 
       <Box sx={{ mt: 4 }}>
         <Typography variant="body2" component="p">
