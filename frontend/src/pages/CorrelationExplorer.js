@@ -154,7 +154,12 @@ const CorrelationExplorer = () => {
       </Box>
 
       {loading ? (
-        <CircularProgress />
+        <Box sx={{ display: "flex", alignItems: "center", mb: 2, gap: 1 }}>
+          <Typography variant="body2" color="text.secondary">
+            Running correlation analysis for the full dataset may take up to a minute, please wait...
+          </Typography>
+          <CircularProgress size={20} />
+        </Box>
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
