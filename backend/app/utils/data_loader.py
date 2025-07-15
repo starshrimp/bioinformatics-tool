@@ -21,6 +21,15 @@ def load_expression(matrix_choice):
         path = os.getenv("ZSCORED_PARQUET")
     elif matrix_choice == "filtered":
         path = os.getenv("FILTERED")
+    elif matrix_choice == "zscored_top8000":
+        logging.info(f"Matrix choice: {matrix_choice}")
+        path = os.getenv("ZSCORED_TOP8000")
+    elif matrix_choice == "median_centered_top8000":
+        logging.info(f"Matrix choice: {matrix_choice}")
+        path = os.getenv("MEDIAN_CENTERED_TOP8000")
+    elif matrix_choice == "COLLAPSED_top8000":
+        path = os.getenv("COLLAPSED_TOP8000")
+        logging.info(f"Matrix choice: {matrix_choice}")
     else:
         logging.info(f"Matrix choice: {matrix_choice}")
         raise ValueError(f"Unknown matrix choice {matrix_choice}")
