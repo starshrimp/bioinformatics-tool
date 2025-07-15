@@ -34,7 +34,33 @@ def api_umap():
             index=expr_df.index,
             columns=expr_df.columns
         )
-
+    # --- Hue extraction ---
+    if hue in clinical_df.columns:
+        hue_series = clinical_df[hue]
+        if not include_nans:
+            mask = ~hue_series.isnull()
+            expr_df = expr_df.loc[mask]
+            clinical_df = clinical_df.loc[mask]
+            hue_series = hue_series.loc[mask]
+        hue_values = hue_series.astype(str).fillna("NaN").tolist()
+    elif hue == "pam50_subtype":
+        # Try single column first
+        if "pam50_subtype" in clinical_df.columns:
+            hue_values = clinical_df["pam50_subtype"].astype(str).tolist()
+        else:
+            # Reconstruct from one-hot columns
+            subtype_cols = [col for col in clinical_df.columns if col.startswith("pam50 subtype__")]
+            if subtype_cols:
+                onehot = clinical_df[subtype_cols]
+                hue_values = onehot.idxmax(axis=1).str.replace("pam50 subtype__", "").tolist()
+            else:
+                hue_values = ["Unknown"] * expr_df.shape[0]
+    else:
+        hue_values = ["Unknown"] * expr_df.shape[0]
+    
+    unique_hues = sorted(list(set(hue_values)))
+    sample_ids = expr_df.index.tolist()
+    
     # Handle clinical features for integration if requested (as in your notebook)
     id_columns = [
         'last_update_date__Mar 12 2018', 'last_update_date__May 04 2022',
@@ -63,32 +89,7 @@ def api_umap():
     clinical_scaled = StandardScaler().fit_transform(clinical_imputed)
 
 
-    # --- Hue extraction ---
-    if hue in clinical_df.columns:
-        hue_series = clinical_df[hue]
-        if not include_nans:
-            mask = ~hue_series.isnull()
-            expr_df = expr_df.loc[mask]
-            clinical_df = clinical_df.loc[mask]
-            hue_series = hue_series.loc[mask]
-        hue_values = hue_series.astype(str).fillna("NaN").tolist()
-    elif hue == "pam50_subtype":
-        # Try single column first
-        if "pam50_subtype" in clinical_df.columns:
-            hue_values = clinical_df["pam50_subtype"].astype(str).tolist()
-        else:
-            # Reconstruct from one-hot columns
-            subtype_cols = [col for col in clinical_df.columns if col.startswith("pam50 subtype__")]
-            if subtype_cols:
-                onehot = clinical_df[subtype_cols]
-                hue_values = onehot.idxmax(axis=1).str.replace("pam50 subtype__", "").tolist()
-            else:
-                hue_values = ["Unknown"] * expr_df.shape[0]
-    else:
-        hue_values = ["Unknown"] * expr_df.shape[0]
-    
-    unique_hues = sorted(list(set(hue_values)))
-    sample_ids = expr_df.index.tolist()
+
 
     # PCA on gene expression
     pca = PCA(n_components=min(100, expr_df.shape[1]), random_state=42)
