@@ -16,6 +16,8 @@ def api_umap():
     data = request.json
     matrix_choice = data['matrix']
     include_clinical = data['include_clinical']
+    hue = data.get('hue', 'pam50_subtype')
+    include_nans = data.get('include_nans', False)
 
     expr_df = load_expression(matrix_choice)
     clinical_df = load_clinical('onehot')  
@@ -32,7 +34,33 @@ def api_umap():
             index=expr_df.index,
             columns=expr_df.columns
         )
-
+    # --- Hue extraction ---
+    if hue in clinical_df.columns:
+        hue_series = clinical_df[hue]
+        if not include_nans:
+            mask = ~hue_series.isnull()
+            expr_df = expr_df.loc[mask]
+            clinical_df = clinical_df.loc[mask]
+            hue_series = hue_series.loc[mask]
+        hue_values = hue_series.astype(str).fillna("NaN").tolist()
+    elif hue == "pam50_subtype":
+        # Try single column first
+        if "pam50_subtype" in clinical_df.columns:
+            hue_values = clinical_df["pam50_subtype"].astype(str).tolist()
+        else:
+            # Reconstruct from one-hot columns
+            subtype_cols = [col for col in clinical_df.columns if col.startswith("pam50 subtype__")]
+            if subtype_cols:
+                onehot = clinical_df[subtype_cols]
+                hue_values = onehot.idxmax(axis=1).str.replace("pam50 subtype__", "").tolist()
+            else:
+                hue_values = ["Unknown"] * expr_df.shape[0]
+    else:
+        hue_values = ["Unknown"] * expr_df.shape[0]
+    
+    unique_hues = sorted(list(set(hue_values)))
+    sample_ids = expr_df.index.tolist()
+    
     # Handle clinical features for integration if requested (as in your notebook)
     id_columns = [
         'last_update_date__Mar 12 2018', 'last_update_date__May 04 2022',
@@ -60,6 +88,9 @@ def api_umap():
     clinical_imputed = pd.concat([clinical_numeric, clinical_onehot], axis=1)
     clinical_scaled = StandardScaler().fit_transform(clinical_imputed)
 
+
+
+
     # PCA on gene expression
     pca = PCA(n_components=min(100, expr_df.shape[1]), random_state=42)
     X_pca = pca.fit_transform(expr_df)
@@ -73,27 +104,9 @@ def api_umap():
     reducer = umap.UMAP(random_state=42)
     X_umap = reducer.fit_transform(X)
 
-    # --- PAM50 Subtype extraction ---
-    # Try single column first
-    if "pam50_subtype" in clinical_df.columns:
-        pam50 = clinical_df["pam50_subtype"].astype(str).tolist()
-    else:
-        # Reconstruct from one-hot columns
-        subtype_cols = [col for col in clinical_df.columns if col.startswith("pam50 subtype__")]
-        if subtype_cols:
-            onehot = clinical_df[subtype_cols]
-            pam50 = onehot.idxmax(axis=1).str.replace("pam50 subtype__", "").tolist()
-        else:
-            pam50 = ["Unknown"] * expr_df.shape[0]
-
-    sample_ids = expr_df.index.tolist()
-
-    # Optional: return the unique subtypes for the legend
-    unique_subtypes = sorted(list(set(pam50)))
-
     return jsonify({
         "umap_coords": X_umap.tolist(),
-        "pam50_subtypes": pam50,
-        "unique_subtypes": unique_subtypes,
+        "hue_values": hue_values,
+        "unique_hues": unique_hues,
         "sample_ids": sample_ids
     })

@@ -15,11 +15,22 @@ const COLORS = [
 
 
 const UMAPPage = () => {
-  const [matrix, setMatrix] = useState('filtered');
+  const [matrix, setMatrix] = useState('COLLAPSED_top8000');
   const [includeClinical, setIncludeClinical] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [hue, setHue] = useState('pam50_subtype');
+  const hueOptions = [
+    { value: 'pam50_subtype', label: 'PAM50 Subtype' },
+    { value: 'er status', label: 'ER Status' },
+    { value: 'pgr status', label: 'PGR Status' },
+    { value: 'her2 status', label: 'HER2 Status' },
+    { value: 'ki67 status', label: 'Ki67 Status' },
+    // Add more options as needed
+  ];
+  const [includeNans, setIncludeNans] = useState(false);
+
 
   const handleRunUMAP = async () => {
     setLoading(true);
@@ -34,6 +45,8 @@ const UMAPPage = () => {
         body: JSON.stringify({
           matrix,
           include_clinical: includeClinical,
+          hue,
+          include_nans: includeNans,
         }),
       });
       const data = await res.json();
@@ -47,11 +60,10 @@ const UMAPPage = () => {
 
   // Prepare traces for Plotly if result exists
   let traces = [];
-  if (result && result.umap_coords && result.pam50_subtypes) {
-    // Use unique_subtypes from backend, or compute from data
-    const subtypes = result.unique_subtypes || Array.from(new Set(result.pam50_subtypes));
+  if (result && result.umap_coords && result.hue_values) {
+    const subtypes = result.unique_hues || Array.from(new Set(result.hue_values));
     traces = subtypes.map((subtype, i) => {
-      const indices = result.pam50_subtypes
+      const indices = result.hue_values
         .map((v, idx) => (v === subtype ? idx : -1))
         .filter(idx => idx !== -1);
       return {
@@ -63,7 +75,6 @@ const UMAPPage = () => {
         marker: { color: COLORS[i % COLORS.length], size: 7, line: { width: 0.5, color: '#333' } },
         text: indices.map(idx => result.sample_ids[idx]),
         hovertemplate: '%{text}<br>UMAP1=%{x:.2f}<br>UMAP2=%{y:.2f}<extra></extra>',
-        // Show sample_id on hover
       };
     });
   }
@@ -88,9 +99,10 @@ const UMAPPage = () => {
             label="Expression Matrix"
             onChange={e => setMatrix(e.target.value)}
           >
-            <MenuItem value="filtered">Filtered Expression Matrix</MenuItem>
-            <MenuItem value="median_centered">Median-Centered Expression Matrix</MenuItem>
-            <MenuItem value="zscored">Median-Centered Z-Scored Expression Matrix</MenuItem>
+            <MenuItem value="COLLAPSED_top8000">Collapsed (Raw) Top 8000 Genes</MenuItem>
+            <MenuItem value="zscored_top8000">Z-Scored Top 8000 Genes</MenuItem>
+            <MenuItem value="median_centered_top8000">Median-Centered Top 8000 Genes</MenuItem>
+
           </Select>
         </FormControl>
         <FormControlLabel
@@ -103,6 +115,34 @@ const UMAPPage = () => {
           }
           label="Include clinical metadata"
           sx={{ ml: 2 }}
+        />
+
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+        {/* ...Expression Matrix dropdown... */}
+        <FormControl sx={{ minWidth: 250 }}>
+          <InputLabel id="hue-select-label">Color by</InputLabel>
+          <Select
+            labelId="hue-select-label"
+            id="hue-select"
+            value={hue}
+            label="Color by"
+            onChange={e => setHue(e.target.value)}
+          >
+            {hueOptions.map(opt => (
+              <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={includeNans}
+              onChange={e => setIncludeNans(e.target.checked)}
+              name="includeNans"
+            />
+          }
+          label="Include NaNs"
         />
       </Box>
 

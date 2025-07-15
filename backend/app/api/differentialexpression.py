@@ -54,13 +54,14 @@ def api_dea():
         .to_dict(orient='records')
     )
 
-    # Send full results for plotting
     volcano_data = {
         "log2fc": de_results["log2FC"].tolist(),
         "neglog10p": [-np.log10(p) if p and p > 0 else 0 for p in de_results["p_value"]],
         "p_adj": de_results["p_adj"].tolist(),
+        "p_value": de_results["p_value"].tolist(),  # <-- Add this line!
         "gene": de_results["gene"].tolist(),
     }
+
 
     # For the heatmap, send top 20 genes expression values (across both groups)
     top_genes = de_results.sort_values('p_adj').head(20)["gene"].tolist()

@@ -162,12 +162,16 @@ const DifferentialExpression = () => {
                       type: "scatter",
                       text: results.volcano_data.gene,
                       marker: {
-                        color: results.volcano_data.p_adj.map((p) =>
-                          p !== null && p < 0.05 ? "red" : "grey"
-                        ),
+                        color: results.volcano_data.p_value.map((p, i) => {
+                          const adj = results.volcano_data.p_adj[i];
+                          if (adj !== null && adj < 0.05) return "red";      // FDR significant
+                          if (p !== null && p < 0.05) return "orange";       // Nominal only
+                          return "grey";
+                        }),
                         size: 8,
                         opacity: 0.7,
                       },
+
                     },
                   ]}
                   layout={{
@@ -194,16 +198,18 @@ const DifferentialExpression = () => {
             <Box sx={{ mt: 2 }}>
               <Typography variant="subtitle1"><strong>How to read this plot:</strong></Typography>
               <Typography variant="body2" color="textSecondary">
-                
                 Each dot represents a gene. The x-axis shows the log<sub>2</sub> fold change between groups (how much a gene is up- or downregulated), and the y-axis shows the statistical significance (−log<sub>10</sub>(p-value)).
                 <br /><br />
-                The <span style={{ color: "#888", fontWeight: "bold" }}>grey dashed horizontal line</span> marks the threshold for statistical significance at p = 0.05 (−log<sub>10</sub>(0.05) ≈ 1.3).<br />
-                <span style={{ color: "grey", fontWeight: "bold" }}>Red dots above this line</span> indicate genes with p-values less than 0.05 (statistically significant differences before correction for multiple testing).<br />
-                <span style={{ color: "grey", fontWeight: "bold" }}>Grey dots</span> are not statistically significant (p ≥ 0.05).
-                <br /><br />
-                Note: Statistical significance should be interpreted in the context of multiple testing (e.g., adjusted p-values/FDR), not just raw p-values.
+                The <span style={{ color: "#888", fontWeight: "bold" }}>grey dashed horizontal line</span> marks the threshold for statistical significance at p = 0.05 (−log<sub>10</sub>(0.05) ≈ 1.3).<br /><br />
+
+                <span style={{ color: "red"}}>Red dots</span> indicate genes with <strong>FDR-adjusted p-value &lt; 0.05</strong> (significant after correction for multiple testing).<br />
+                <span style={{ color: "orange"}}>Orange dots</span> indicate genes with <strong>raw p-value &lt; 0.05</strong> but not FDR significant.<br />
+                <span style={{ color: "grey"}}>Grey dots</span> are not statistically significant (raw p-value ≥ 0.05).<br /><br />
+
+                Genes above the grey dashed line are nominally significant (raw p &lt; 0.05), but only red dots are considered significant after correcting for multiple testing (FDR).
               </Typography>
             </Box>
+
 
             {/* Heatmap */}
             <Box>
