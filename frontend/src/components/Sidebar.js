@@ -45,41 +45,9 @@ const Sidebar = () => {
         <ListItemButton component={Link} to="/differentialexpression">
           <ListItemText primary="Differential Expression Analysis 🧬" />
         </ListItemButton>
-        
-        {/* Unsupervised ML with dropdown */}
-        <ListItemButton onClick={() => handleToggle('unsupervised')}>
-          <ListItemText primary="Unsupervised ML 🧩" />
-          {openMenus.unsupervised ? <ExpandLess /> : <ExpandMore />}
+        <ListItemButton component={Link} to="/umap">
+          <ListItemText primary="Interactive UMAP 🕹️" />
         </ListItemButton>
-        <Collapse in={openMenus.unsupervised} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/umap">
-              <ListItemText primary="UMAP" />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/pca">
-              <ListItemText primary="PCA" />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/clustering">
-              <ListItemText primary="Clustering" />
-            </ListItemButton>
-          </List>
-        </Collapse>
-
-        {/* Supervised ML with dropdown */}
-        <ListItemButton onClick={() => handleToggle('supervised')}>
-          <ListItemText primary="Supervised ML 🎯" />
-          {openMenus.supervised ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={openMenus.supervised} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/classification">
-              <ListItemText primary="Classification" />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/regression">
-              <ListItemText primary="Regression" />
-            </ListItemButton>
-          </List>
-        </Collapse>
         {/* Data Analysis with dropdown */}
         <ListItemButton onClick={() => handleToggle('dataAnalysis')}>
           <ListItemText primary="Jupyter Notebooks 📓" />
