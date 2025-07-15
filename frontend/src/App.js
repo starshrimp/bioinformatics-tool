@@ -46,14 +46,14 @@ function App() {
               <Route path="/correlationexplorer" element={<CorrelationExplorer />} />
               <Route path="/llmeda" element={<LLMEDA />} />
               <Route path="/umap" element={<UMAP />} />
-              <Route path="dataprepexpr" element={<DataPrepExpr />} />
-              <Route path="dataprepclin" element={<DataPrepClin />} />
-              <Route path="dataanalysis" element={<DataAnalysis />} />
-              <Route path="pca" element={<PrincipalComponent />} />
-              <Route path="umappam50" element={<UMAPPAM50 />} />
-              <Route path="umapbiomarkers" element={<UMAPBiomarkers />} />
-              <Route path="biomarkers" element={<Biomarkers />} />
-              <Route path="subtypes" element={<Subtypes />} />
+              <Route path="/dataprepexpr" element={<DataPrepExpr />} />
+              <Route path="/dataprepclin" element={<DataPrepClin />} />
+              <Route path="/dataanalysis" element={<DataAnalysis />} />
+              <Route path="/pca" element={<PrincipalComponent />} />
+              <Route path="/umappam50" element={<UMAPPAM50 />} />
+              <Route path="/umapbiomarkers" element={<UMAPBiomarkers />} />
+              <Route path="/biomarkers" element={<Biomarkers />} />
+              <Route path="/subtypes" element={<Subtypes />} />
             </Routes>
           </Box>
         </Paper>
