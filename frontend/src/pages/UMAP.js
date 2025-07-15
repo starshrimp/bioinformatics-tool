@@ -15,7 +15,7 @@ const COLORS = [
 
 
 const UMAPPage = () => {
-  const [matrix, setMatrix] = useState('filtered');
+  const [matrix, setMatrix] = useState('COLLAPSED_top8000');
   const [includeClinical, setIncludeClinical] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -99,12 +99,9 @@ const UMAPPage = () => {
             label="Expression Matrix"
             onChange={e => setMatrix(e.target.value)}
           >
-            <MenuItem value="filtered">Filtered Expression Matrix</MenuItem>
-            <MenuItem value="median_centered">Median-Centered Expression Matrix</MenuItem>
-            <MenuItem value="zscored">Median-Centered Z-Scored Expression Matrix</MenuItem>
+            <MenuItem value="COLLAPSED_top8000">Collapsed (Raw) Top 8000 Genes</MenuItem>
             <MenuItem value="zscored_top8000">Z-Scored Top 8000 Genes</MenuItem>
             <MenuItem value="median_centered_top8000">Median-Centered Top 8000 Genes</MenuItem>
-            <MenuItem value="COLLAPSED_top8000">Collapsed Top 8000 Genes</MenuItem>
 
           </Select>
         </FormControl>
