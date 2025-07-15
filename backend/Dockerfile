@@ -17,7 +17,7 @@ COPY requirements.txt .
 COPY data/parquet/median_centered_top8000.parquet ./data/parquet/
 COPY data/parquet/COLLAPSED_top8000.parquet ./data/parquet/
 COPY data/parquet/zscored_top8000.parquet ./data/parquet/
-COPY data/parquetfiltered_top5000.parquet ./data/parquet/
+COPY data/parquet/filtered_top5000.parquet ./data/parquet/
 
 COPY data/GSE96058_clinical_metadata_cleaned.csv ./data/
 COPY data/GSE96058_clinical_LLM.csv ./data/
