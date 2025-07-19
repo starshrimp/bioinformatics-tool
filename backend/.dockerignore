@@ -10,7 +10,7 @@ data/*
 !data/parquet/*.parquet
 !data/GSE96058_clinical_metadata_cleaned.csv
 !data/GSE96058_clinical_LLM.csv
-
+!data/GSE96058_clinical_onehot.csv
 
 # Exclude large/unnecessary data files specifically
 data/*.soft.gz
@@ -20,6 +20,7 @@ data/*.txt
 data/GSE96058_*.csv
 !data/GSE96058_clinical_metadata_cleaned.csv
 !data/GSE96058_clinical_LLM.csv
+!data/GSE96058_clinical_onehot.csv
 data/expression_*.csv
 data/*.sqlite3
 data/test.ipynb

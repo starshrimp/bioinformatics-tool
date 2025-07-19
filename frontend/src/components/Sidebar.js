@@ -22,6 +22,7 @@ const Sidebar = () => {
     <Box
       sx={{
         width: 250,
+        flexShrink: 0,
         borderRight: '1px solid #ddd',
         bgcolor: '#f9f9f9',
         p: 2.5,
@@ -37,52 +38,48 @@ const Sidebar = () => {
         <ListItemButton component={Link} to="/llmeda">
           <ListItemText primary="Data Copilot 💬" />
         </ListItemButton>
-        
+        <ListItemButton component={Link} to="/correlationexplorer">
+          <ListItemText primary="Correlation Explorer 🔗" />
+        </ListItemButton>
+        <ListItemButton component={Link} to="/differentialexpression">
+          <ListItemText primary="Differential Expression Analysis 🧬" />
+        </ListItemButton>
+        <ListItemButton component={Link} to="/umap">
+          <ListItemText primary="Interactive UMAP 🕹️" />
+        </ListItemButton>
         {/* Data Analysis with dropdown */}
         <ListItemButton onClick={() => handleToggle('dataAnalysis')}>
-          <ListItemText primary="Data Analysis 📈" />
+          <ListItemText primary="Jupyter Notebooks 📓" />
           {openMenus.dataAnalysis ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={openMenus.dataAnalysis} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/eda">
-              <ListItemText primary="Exploratory Data Analysis" />
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/dataprepexpr">
+              <ListItemText primary="Data Preprocessing Expression Matrix" />
             </ListItemButton>
-          </List>
-        </Collapse>
-        
-        {/* Unsupervised ML with dropdown */}
-        <ListItemButton onClick={() => handleToggle('unsupervised')}>
-          <ListItemText primary="Unsupervised ML 🧩" />
-          {openMenus.unsupervised ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={openMenus.unsupervised} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/umap">
-              <ListItemText primary="UMAP" />
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/dataprepclin">
+              <ListItemText primary="Data Preprocessing Clinical Metadata" />
+            </ListItemButton>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/dataanalysis">
+              <ListItemText primary="Data Analysis" />
             </ListItemButton>
             <ListItemButton sx={{ pl: 4 }} component={Link} to="/pca">
-              <ListItemText primary="PCA" />
+              <ListItemText primary="Principal Components Analysis" />
             </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/clustering">
-              <ListItemText primary="Clustering" />
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/umappam50">
+              <ListItemText primary="UMAP for PAM50 Subtypes" />
             </ListItemButton>
-          </List>
-        </Collapse>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/umapbiomarkers">
+              <ListItemText primary="UMAP for Cancer Biomarkers" />
+            </ListItemButton>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/subtypes">
+              <ListItemText primary="PAM50 Subtype Prediction" />
+            </ListItemButton>
+            <ListItemButton sx={{ pl: 4 }} component={Link} to="/biomarkers">
+              <ListItemText primary="Biomarkers Prediction" />
+            </ListItemButton>
 
-        {/* Supervised ML with dropdown */}
-        <ListItemButton onClick={() => handleToggle('supervised')}>
-          <ListItemText primary="Supervised ML 🎯" />
-          {openMenus.supervised ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={openMenus.supervised} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/classification">
-              <ListItemText primary="Classification" />
-            </ListItemButton>
-            <ListItemButton sx={{ pl: 4 }} component={Link} to="/regression">
-              <ListItemText primary="Regression" />
-            </ListItemButton>
+
           </List>
         </Collapse>
       </List>

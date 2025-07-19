@@ -21,6 +21,15 @@ def load_expression(matrix_choice):
         path = os.getenv("ZSCORED_PARQUET")
     elif matrix_choice == "filtered":
         path = os.getenv("FILTERED")
+    elif matrix_choice == "zscored_top8000":
+        logging.info(f"Matrix choice: {matrix_choice}")
+        path = os.getenv("ZSCORED_TOP8000")
+    elif matrix_choice == "median_centered_top8000":
+        logging.info(f"Matrix choice: {matrix_choice}")
+        path = os.getenv("MEDIAN_CENTERED_TOP8000")
+    elif matrix_choice == "COLLAPSED_top8000":
+        path = os.getenv("COLLAPSED_TOP8000")
+        logging.info(f"Matrix choice: {matrix_choice}")
     else:
         logging.info(f"Matrix choice: {matrix_choice}")
         raise ValueError(f"Unknown matrix choice {matrix_choice}")
@@ -37,8 +46,14 @@ def load_expression(matrix_choice):
     else:
         raise ValueError("Unsupported file format for expression matrix: " + path)
 
-def load_clinical():
-    path = os.getenv("CLINICAL")
+def load_clinical(clinical_choice):
+    logging.info(f"Loading clinical data with choice: {clinical_choice}")
+    if clinical_choice == "onehot":
+        path = os.getenv("CLINICAL_ONEHOT")
+    elif clinical_choice == "llm":
+        path = os.getenv("CLINICAL_LLM")
+    elif clinical_choice == "CLINICAL":
+        path = os.getenv("CLINICAL")
     if not path:
         raise ValueError("File path for clinical data is not set!")
     path = get_full_path(path)

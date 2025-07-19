@@ -18,6 +18,7 @@ def call_coder_llm(steps, columns):
         "• When selecting multiple columns (especially after groupby or in general), ALWAYS use a list of columns (square brackets) like clinical_df[['col1', 'col2']]. Never use a tuple.\n"
         "• Do not use packages that are not already imported or installed. Only use pandas, numpy, matplotlib, lifelines, and seaborn.\n"
         "• NEVER use plt.savefig() with a file path—never save plots to disk. Just generate the plot. The system will capture and display the current figure automatically.\n"
+        "• Please ensure all value matching (e.g. for columns) is case-insensitive.\n"
         "• For summary statistics, select only a small number of clinically relevant columns, not all columns. Always show summary statistics as a transposed table (variables as rows, stats as columns) using .describe().T.to_markdown().\n"
         "• For each categorical column, display value counts as a markdown table (use .value_counts().to_frame().to_markdown()).\n"
         "• If a step asks for a plot or visualization, always generate a matplotlib or seaborn plot as well, but do NOT save it to disk or assign a string like 'Box Plot Saved...'.\n"
